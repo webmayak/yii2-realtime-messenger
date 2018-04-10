@@ -12,6 +12,7 @@ namespace pantera\messenger\widgets\messenger;
 use common\modules\user\common\models\User;
 use pantera\messenger\helpers\MessagesEncodeHelper;
 use pantera\messenger\models\MessengerMessages;
+use pantera\messenger\models\MessengerThreads;
 use pantera\messenger\Module;
 use Yii;
 use yii\base\Widget;
@@ -20,6 +21,8 @@ class Messenger extends Widget
 {
     /* @var MessengerMessages[] */
     public $messages;
+    /* @var MessengerThreads[] */
+    public $threads;
     /* @var User[] */
     public $users;
     /* @var int */
@@ -32,6 +35,7 @@ class Messenger extends Widget
             'messages' => $this->messages,
             'users' => $this->users,
             'threadId' => $this->threadId,
+            'threads' => $this->threads,
         ]);
     }
 

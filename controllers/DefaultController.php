@@ -9,6 +9,7 @@ use pantera\messenger\models\MessengerThreads;
 use pantera\messenger\Module;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\Url;
 use yii\web\Controller;
 
 class DefaultController extends Controller
@@ -33,30 +34,24 @@ class DefaultController extends Controller
 
     public function actionHideThread()
     {
-
         $selfId = Yii::$app->user->id;
         $toId = $_POST['user_id'];
-        $model = MessengerThreads::find('(`to`=:me AND `from`=:id)  OR (`to`=:id AND `from`=:me)', [':me' => $selfId, ':id' => $toId, 'sort' => 'id']);
+        $model = MessengerThreads::find()
+            ->where('(`to`=:me AND `from`=:id)  OR (`to`=:id AND `from`=:me)', [':me' => $selfId, ':id' => $toId])
+            ->one();
         if ($model->to == $selfId) {
             $model->hide_to = 1;
         } else {
             $model->hide_from = 1;
         }
         $model->save();
-//        $messagesModel = MessengerMessages::model()->findAll(['thread_id'=>$model->id]);
-//
-//        foreach($messagesModel as $message){
-//            $message->readed = 1;
-//            $message->save();
-//            print_r($message);exit;
-//        }
-        Yii::$app->db->createCommand("UPDATE ag_messenger_messages SET readed = 1 WHERE thread_id =" . $model->id . " AND user_" . ($selfId == min($selfId, $toId) ? 'min' : 'max') . " = " . (int)$selfId)->execute();
-
+        Yii::$app->db->createCommand("UPDATE " . MessengerMessages::tableName() . " SET readed = 1 WHERE thread_id =" . $model->id . " AND user_" . ($selfId == min($selfId, $toId) ? 'min' : 'max') . " = " . (int)$selfId)->execute();
         $hideUser = "user_" . ($selfId == min((int)$model->to, (int)$model->from) ? 'min' : 'max') . "_hide";
-        $sql = "UPDATE ag_messenger_messages SET " . $hideUser . " = 1 WHERE thread_id =" . $model->id;
-
+        $sql = "UPDATE " . MessengerMessages::tableName() . " SET " . $hideUser . " = 1 WHERE thread_id =" . $model->id;
         Yii::$app->db->createCommand($sql)->execute();
-
+        return $this->asJson([
+            'url' => Url::to(['index']),
+        ]);
     }
 
     public function actionReadMessages()
@@ -122,6 +117,7 @@ class DefaultController extends Controller
         //Массив для добавления передаваемых на вью переменных
         $renderArray = [
             'messages' => [],
+            'threads' => [],
             'threadId' => null,
         ];
         $sql = "SELECT `id`,`updated_at`,`from`,`to` FROM " . MessengerThreads::tableName() . " WHERE `to` = " . $selfId . " 
@@ -135,30 +131,16 @@ class DefaultController extends Controller
                 $messagesUsers[$thread['to']] = $thread['to'];
             }
         }
-
-
-//        print_r($threadsTo);exit;
-//        $threadsTo = MessengerThreads::model()->findAllByAttributes(array('to'=>$selfId),array('order'=>'updated_at ASC LIMIT 0,1000'));//findAllByAttributes(['to'=>$selfId],['order'=>'updated_at']);
-//        foreach ($threadsTo as $thread) {
-//            $messagesUsers[$thread->from] = $thread->from;
-//        }
-//        $threadsFrom = MessengerThreads::model()->findAll('`from`=:from ORDER BY updated_at DESC', [':from' => $selfId]);
-//        $sql = "SELECT * FROM `ag_messenger_threads` WHERE `from` = ".$selfId." ORDER BY updated_at DESC";
-//        $threadsTo = Yii::app()->db->createCommand($sql)->queryAll();
-//        print_r($threadsTo);exit;
-//        foreach ($threadsFrom as $thread) {
-//            $messagesUsers[$thread->to] = $thread->to;
-//        }
         if (isset($_GET["user"]) || isset($_POST['name'])) {
             //Найдем все треды свзянаые с нами и переданым пользователем
             //Если включена настройка модуля
-            if (Yii::$app->getModule('messenger')->threadsMode) {
-                $model = MessengerThreads::find()->where('(`to`=:me AND `from`=:id) OR (`to`=:id AND `from`=:me)', [':me' => $selfId, ':id' => $_GET['user']])->one();
+            if ($this->module->threadsMode) {
+                $model = MessengerThreads::find()->where('(`to`=:me AND `from`=:id) OR (`to`=:id AND `from`=:me)', [':me' => $selfId, ':id' => $_GET['user']])->all();
                 $renderArray['threads'] = $model;
                 if (isset($_GET['thread_id'])) {
-                    if ($threadModel = MessengerThreads::model()->findByPk($_GET['thread_id'])) {
+                    if ($threadModel = MessengerThreads::findOne($_GET['thread_id'])) {
                         if ($threadModel->to == $selfId || $threadModel->from == $selfId) {
-                            $messagesModel = MessengerMessages::model()->findAllByAttributes(['thread_id' => $_GET['thread_id']]);
+                            $messagesModel = MessengerMessages::findAll(['thread_id' => $_GET['thread_id']]);
 
                             $renderArray['messages'] = $messagesModel;
                         } else {
@@ -333,19 +315,7 @@ class DefaultController extends Controller
         foreach ($messagesUsers as $user) {
             array_push($users, User::findOne($user));
         }
-
-//        print_r($users);exit;
-//        $users = User::model()->findAllByPk($messagesUsers);
-//        print_r($users);exit;
         $renderArray['users'] = $users;
-//        var_dump(MessagesEncodeHelper::encrypt(7));
-//        var_dump(MessagesEncodeHelper::decrypt(MessagesEncodeHelper::encrypt(7)));
-//        die();
-
-//        var_dump(Yii::$app->params['node_server'] . "/new-message?hash=" . MessagesEncodeHelper::encrypt(Yii::$app->user->id) . "&sender=" . Yii::$app->user->id);
-////        die();
-//        file_get_contents(Yii::$app->params['node_server'] . "/new-message?hash=" . MessagesEncodeHelper::encrypt(Yii::$app->user->id) . "&sender=" . Yii::$app->user->id);
-//        die();
         return $this->render('index', $renderArray);
 
     }

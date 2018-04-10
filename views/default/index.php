@@ -1,6 +1,7 @@
 <?php
 
 use pantera\messenger\models\MessengerMessages;
+use pantera\messenger\models\MessengerThreads;
 use pantera\messenger\widgets\messenger\Messenger;
 use yii\web\View;
 
@@ -8,7 +9,7 @@ use yii\web\View;
 /* @var $messages MessengerMessages[] */
 /* @var $threadId int */
 /* @var $users \common\modules\user\common\models\User[] */
-
+/* @var $threads MessengerThreads[] */
 $this->title = 'Мои сообщения';
 ?>
 
@@ -16,4 +17,5 @@ $this->title = 'Мои сообщения';
     'users' => $users,
     'messages' => $messages,
     'threadId' => $threadId,
+    'threads' => $threads,
 ]) ?>

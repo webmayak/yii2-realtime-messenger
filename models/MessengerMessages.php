@@ -49,8 +49,8 @@ class MessengerMessages extends ActiveRecord
 
     public function getLastThreadMessage()
     {
-        $result = Yii::$app->db->createCommand("SELECT t.id , t.to , t.from , m.created_at, m.body, m.id FROM ag_messenger_messages m 
-                                                 LEFT JOIN ag_messenger_threads t ON (t.from = m.user_id OR (t.to = m.user_id )) AND t.id = m.thread_id
+        $result = Yii::$app->db->createCommand("SELECT t.id , t.to , t.from , m.created_at, m.body, m.id FROM " . MessengerMessages::tableName() . " m 
+                                                 LEFT JOIN " . MessengerThreads::tableName() . " t ON (t.from = m.user_id OR (t.to = m.user_id )) AND t.id = m.thread_id
                                                  WHERE
                                                    (m.thread_id = " . $this->thread_id . ")
                                                  ORDER BY m.created_at DESC 
@@ -106,13 +106,17 @@ OR
 
     public function getThreadUnreadCount()
     {
-        return count($this->findAll(['condition' => "readed = 0 AND thread_id = :thread_id AND user_id <> :user_id",
-            'params' => [':thread_id' => $this->thread_id,
+//        return count($this->findAll(['condition' => "readed = 0 AND thread_id = :thread_id AND user_id <> :user_id",
+//            'params' => [':thread_id' => $this->thread_id,
+//                ':user_id' => Yii::$app->user->id,
+//            ]
+//
+//        ]));
+        return self::find()
+            ->where("readed = 0 AND thread_id = :thread_id AND user_id <> :user_id", [':thread_id' => $this->thread_id,
                 ':user_id' => Yii::$app->user->id,
-            ]
-
-        ]));
-
+            ])
+            ->count();
     }
 
     /**

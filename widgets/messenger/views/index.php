@@ -11,6 +11,7 @@ use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreads;
 use pantera\messenger\Module;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\View;
 
 /* @var $this View */
@@ -18,7 +19,7 @@ use yii\web\View;
 /* @var $users \common\modules\user\common\models\User[] */
 /* @var $messages MessengerMessages[] */
 /* @var $module Module */
-
+/* @var $threads MessengerThreads[] */
 $module = Yii::$app->getModule('messenger');
 ?>
 <div class="messages card" id="messages_card">
@@ -88,7 +89,7 @@ $module = Yii::$app->getModule('messenger');
                         } elseif ($module->threadsMode) {
                             echo 'выбор диалога';
                         }
-                        echo ' <a class="pull-right" href="#" id="hide_thread-' . @$_GET["user"] . '" data-user-id="' . @$_GET["user"] . '"   style=" position:relative; font-size:11px; color:#bbb; margin-right:5px; top:0; right:-5px; cursor: pointer; text-decoration:underline ">удалить диалог</a>';
+                        echo ' <a class="pull-right" href="' . Url::to(['/messenger/default/hide-thread']) . '" id="hide_thread-' . @$_GET["user"] . '" data-user-id="' . @$_GET["user"] . '"   style=" position:relative; font-size:11px; color:#bbb; margin-right:5px; top:0; right:-5px; cursor: pointer; text-decoration:underline ">удалить диалог</a>';
                     } else {
                         echo 'Выбор собеседника';
                     }
@@ -103,7 +104,7 @@ $module = Yii::$app->getModule('messenger');
         <div class="mb-list">
             <div id="messagesArea"
                  class="mbl-messages c-overflow mCustomScrollbar <?= empty($messages) ? "empty_dialogs" : "" ?> mCS-autoHide <?php if (!isset($_GET['thread_id'])): ?>threads<?php endif; ?>">
-                <?php if (isset($messages)): ?>
+                <?php if (isset($messages) && !empty($messages)): ?>
                     <div id="messagesAreaInner">
                         <?php foreach ($messages as $message): ?>
                             <div

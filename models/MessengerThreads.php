@@ -15,6 +15,8 @@ use yii\db\ActiveRecord;
  * @property integer $hide_to
  * @property integer $hide_from
  * @property string $updated_at [datetime]
+ *
+ * @property MessengerMessages[] $messengerMessages
  */
 class MessengerThreads extends ActiveRecord
 {
@@ -54,5 +56,10 @@ class MessengerThreads extends ActiveRecord
             'to' => 'To',
 
         );
+    }
+
+    public function getMessengerMessages()
+    {
+        return $this->hasOne(MessengerMessages::className(), ['thread_id' => 'id']);
     }
 }

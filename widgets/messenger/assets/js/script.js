@@ -72,17 +72,9 @@ $('a[id^="hide_thread-"]').click(function (event) {
     if (!confirm('Действительно удалить диалог? ')) {
       return false
     }
-    $.post('/messages/default/hideThread', {user_id: $(this).data('userId')}).done(
-//                       $('#thread_block-<?//=$user->id?>//').hide('slow')
-
-
-    )
-
-    setTimeout(function () {
-      location.replace('/messages/')
-    }, 800)
-
-
+    $.post($(this).attr('href'), {user_id: $(this).data('userId')}).done(function (result) {
+      location.replace(result.url)
+    })
   }
 )
 
@@ -114,16 +106,16 @@ var connectToSocketIo = function (server, userId, sound, userName) {
       refreshLists()
     })
   } catch (e) {
-    console.log(e);
+    console.log(e)
   }
 }
 
 $.extend({
-  playSound: function(){
+  playSound: function () {
     return $(
       '<audio autoplay="autoplay" style="display:none;">'
       + '<source src="' + arguments[0] + '.mp3" />'
       + '</audio>'
-    ).appendTo('body');
+    ).appendTo('body')
   }
-});
+})
