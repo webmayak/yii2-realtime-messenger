@@ -16,6 +16,9 @@ use yii\db\ActiveRecord;
  * @property integer $position
  * @property integer $position_count
  * @property string $message_body
+ *
+ * @property User $toUser
+ * @property User $fromUser
  */
 class MessagesLog extends ActiveRecord
 {
@@ -95,5 +98,15 @@ class MessagesLog extends ActiveRecord
             'position_count' => 'Position Count',
             'message_body' => 'Message Body',
         );
+    }
+
+    public function getToUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'to']);
+    }
+
+    public function getFromUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'from']);
     }
 }
