@@ -137,7 +137,10 @@ class DefaultController extends Controller
         //Получим список пользователей с которыми у нас есть переписки
         $messagesUsers = [];
         //Массив для добавления передаваемых на вью переменных
-        $renderArray = [];
+        $renderArray = [
+            'messages' => [],
+            'threadId' => null,
+        ];
         $sql = "SELECT `id`,`updated_at`,`from`,`to` FROM " . MessengerThreads::tableName() . " WHERE `to` = " . $selfId . " 
                 UNION
                 SELECT `id`,`updated_at`,`from`,`to` FROM " . MessengerThreads::tableName() . " WHERE `from` = " . $selfId . " ORDER BY updated_at DESC";

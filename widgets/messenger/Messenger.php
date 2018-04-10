@@ -10,7 +10,10 @@ namespace pantera\messenger\widgets\messenger;
 
 
 use common\modules\user\common\models\User;
+use pantera\messenger\helpers\MessagesEncodeHelper;
 use pantera\messenger\models\MessengerMessages;
+use pantera\messenger\Module;
+use Yii;
 use yii\base\Widget;
 
 class Messenger extends Widget
@@ -21,7 +24,6 @@ class Messenger extends Widget
     public $users;
     /* @var int */
     public $threadId;
-    private $_sound;
 
     public function run()
     {
@@ -30,7 +32,6 @@ class Messenger extends Widget
             'messages' => $this->messages,
             'users' => $this->users,
             'threadId' => $this->threadId,
-            'sound' => $this->_sound,
         ]);
     }
 
@@ -38,6 +39,14 @@ class Messenger extends Widget
     {
         parent::init();
         $bundle = Assets::register($this->view);
-        $this->_sound = $bundle->baseUrl . '/sounds/new-order';
+        /* @var $module Module */
+        $module = Yii::$app->getModule('messenger');
+        $userId = MessagesEncodeHelper::encrypt(Yii::$app->user->id);
+        $userName = Yii::$app->user->identity->profile->name;
+        $sound = $bundle->baseUrl . '/sounds/new-order';
+        $js = <<<JS
+            connectToSocketIo('{$module->nodeServer}', '{$userId}', '{$sound}', '{$userName}');
+JS;
+        $this->view->registerJs($js);
     }
 }

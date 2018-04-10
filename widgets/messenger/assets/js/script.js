@@ -107,11 +107,9 @@ function refreshLists () {
 }
 
 var connectToSocketIo = function (server, userId, sound, userName) {
-  console.log(userId)
   try {
     var socket = io.connect(server + '?hash=' + userId)
     socket.on('notification', function (data) {
-      console.log(data);
       $.playSound(sound)
       refreshLists()
     })

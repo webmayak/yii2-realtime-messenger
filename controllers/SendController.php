@@ -6,12 +6,16 @@ use pantera\messenger\helpers\MessagesEncodeHelper;
 use pantera\messenger\models\MessagesLog;
 use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreads;
+use pantera\messenger\Module;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
 class SendController extends Controller
 {
+    /* @var Module */
+    public $module;
+
     public function behaviors()
     {
         return [
@@ -69,7 +73,7 @@ class SendController extends Controller
                 }
                 // Отправим информацию о сообщении
                 //Закодируем ид пользователя
-                file_get_contents(Yii::$app->params['node_server'] . "/new-message?hash=" . MessagesEncodeHelper::encrypt($nodeSendUserId) . "&sender=" . Yii::$app->user->id);
+                file_get_contents($this->module->nodeServer . "/new-message?hash=" . MessagesEncodeHelper::encrypt($nodeSendUserId) . "&sender=" . Yii::$app->user->id);
                 if (!Yii::$app->request->isAjax) {
                     $this->redirect($_SERVER['HTTP_REFERER']);
                 }

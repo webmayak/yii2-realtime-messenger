@@ -18,16 +18,8 @@ use yii\web\View;
 /* @var $users \common\modules\user\common\models\User[] */
 /* @var $messages MessengerMessages[] */
 /* @var $module Module */
-/* @var $sound string */
 
 $module = Yii::$app->getModule('messenger');
-$nodeServer = Yii::$app->params['node_server'];
-$userId = MessagesEncodeHelper::encrypt(Yii::$app->user->id);
-$userName = common\modules\user\common\models\User::findOne(Yii::$app->user->id)->profile->name;
-$js = <<<JS
-connectToSocketIo('{$nodeServer}', '{$userId}', '{$sound}', '{$userName}');
-JS;
-$this->registerJs($js);
 ?>
 <div class="messages card" id="messages_card">
     <div class="m-sidebar">
