@@ -5,12 +5,16 @@ namespace pantera\messenger\controllers;
 use pantera\messenger\helpers\MessagesEncodeHelper;
 use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreads;
+use pantera\messenger\Module;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
 class ReadMessagesController extends Controller
 {
+    /* @var Module */
+    public $module;
+
     public function behaviors()
     {
         return [
@@ -28,7 +32,7 @@ class ReadMessagesController extends Controller
 
     public function actionIndex()
     {
-        if (Yii::$app->getModule('messenger')->threadsMode) {
+        if ($this->module->threadsMode) {
             $threadId = $_POST['$threadId'];
             Yii::$app->db->createCommand("UPDATE " . MessengerMessages::tableName() . " SET readed=1 WHERE thread_id = " . $threadId . " AND user_id <>" . Yii::$app->user->id . "")->execute();
         } else {

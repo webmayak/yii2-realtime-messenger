@@ -19,6 +19,18 @@ use yii\db\ActiveRecord;
  */
 class MessagesLog extends ActiveRecord
 {
+    public static function add($to, $from, $body, $partition = 0, $count = 0, $position = 0)
+    {
+        $model = new self();
+        $model->message_body = $body;
+        $model->partition = $partition;
+        $model->position = $position;
+        $model->to = $to;
+        $model->position_count = $count;
+        $model->from = $from;
+        $model->save();
+    }
+
     /**
      * @return string the associated database table name
      */
@@ -37,7 +49,6 @@ class MessagesLog extends ActiveRecord
         return array(
             array(['to', 'from', 'partition'], 'required'),
             array(['to', 'from', 'position', 'position_count'], 'number', 'integerOnly' => true),
-            array(['partition'], 'string', 'max' => 255),
             array(['message_body'], 'safe'),
         );
     }

@@ -3,17 +3,19 @@
 namespace pantera\messenger\controllers;
 
 use common\modules\user\common\models\User;
-use pantera\messenger\helpers\MessagesEncodeHelper;
 use pantera\messenger\models\MessagesLog;
 use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreads;
-use function var_dump;
+use pantera\messenger\Module;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
 class DefaultController extends Controller
 {
+    /* @var Module */
+    public $module;
+
     public function behaviors()
     {
         return [
@@ -54,25 +56,6 @@ class DefaultController extends Controller
         $sql = "UPDATE ag_messenger_messages SET " . $hideUser . " = 1 WHERE thread_id =" . $model->id;
 
         Yii::$app->db->createCommand($sql)->execute();
-
-    }
-
-    /*
-     * Функция сохранения лога какого-либо сообщения
-     * @noresult
-     *
-     */
-    public function messageLog($to, $from, $body, $partition = 0, $count = 0, $position = 0)
-    {
-        $model = new MessagesLog();
-        $model->message_body = $body;
-        $model->partition = $partition;
-        $model->position = $position;
-        $model->to = $to;
-        $model->position_count = $count;
-        $model->from = $from;
-        $model->save();
-
 
     }
 
@@ -315,7 +298,7 @@ class DefaultController extends Controller
                             $nodeSendUserId = $nodeSendUserId->to;
                         }
                         $this->curl_request_async(Yii::app()->params['node_server'] . "/hash/" . $this->encrypt($nodeSendUserId) . "/sender/" . Yii::app()->user->id, ['a' => 'b'], 'GET');
-                        $this->messageLog($model->to, !empty($newUserId) ? $newUserId : $selfId, $newMessage->body, $partition, $count, $positionId);
+                        MessagesLog::add($model->to, !empty($newUserId) ? $newUserId : $selfId, $newMessage->body, $partition, $count, $positionId);
                         return $this->renderPartial('message_success', [
                             'sellerId' => $model->to,
                         ]);

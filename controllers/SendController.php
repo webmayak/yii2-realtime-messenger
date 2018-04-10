@@ -31,18 +31,6 @@ class SendController extends Controller
         ];
     }
 
-    public function messageLog($to, $from, $body, $partition = 0, $count = 0, $position = 0)
-    {
-        $model = new MessagesLog();
-        $model->message_body = $body;
-        $model->partition = $partition;
-        $model->position = $position;
-        $model->to = $to;
-        $model->position_count = $count;
-        $model->from = $from;
-        $model->save();
-    }
-
     public function actionIndex()
     {
         if (isset($_POST['text'])) {
@@ -64,7 +52,7 @@ class SendController extends Controller
                 $thread->hide_from = 0;
                 $thread->updated_at = date("Y-m-d H:i:s");
                 $thread->save();
-                $this->messageLog($to, $from, $model->body, 0, 0, 0);
+                MessagesLog::add($to, $from, $model->body, 0, 0, 0);
                 $nodeSendUserId = MessengerThreads::findOne($model->thread_id);
                 if ($nodeSendUserId->to == $model->user_id) {
                     $nodeSendUserId = $nodeSendUserId->from;
