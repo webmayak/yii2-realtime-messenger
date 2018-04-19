@@ -9,7 +9,10 @@ use pantera\messenger\models\MessengerThreads;
 use pantera\messenger\Module;
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
+use function is_null;
 
 class SendController extends Controller
 {
@@ -26,6 +29,12 @@ class SendController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                     ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'create' => ['POST'],
                 ],
             ],
         ];
@@ -67,5 +76,30 @@ class SendController extends Controller
                 }
             }
         }
+    }
+
+    /**
+     * Создание сообщения для канала с ключом
+     */
+    public function actionCreate()
+    {
+        $model = new MessengerMessages();
+        $model->load(Yii::$app->request->post());
+        //Если не передан идентификатор канала то созданим новый
+        if (empty($model->thread_id)) {
+            if (is_null(Yii::$app->request->get('key'))) {
+                throw new BadRequestHttpException('Отсутствует ключ для нового канала');
+            }
+            $thread = new MessengerThreads();
+            $thread->key = Yii::$app->request->get('key');
+            $thread->save();
+            $model->thread_id = $thread->id;
+        }
+        $model->user_id = Yii::$app->user->id;
+        $model->save();
+        if (Yii::$app->request->isAjax) {
+            return $this->asJson([]);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
     }
 }

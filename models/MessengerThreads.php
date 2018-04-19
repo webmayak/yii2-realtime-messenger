@@ -15,6 +15,7 @@ use yii\db\ActiveRecord;
  * @property integer $hide_to
  * @property integer $hide_from
  * @property string $updated_at [datetime]
+ * @property string $key
  *
  * @property MessengerMessages[] $messengerMessages
  */
@@ -40,7 +41,7 @@ class MessengerThreads extends ActiveRecord
         // will receive user inputs.
         return array(
             array(['from', 'to'], 'number', 'integerOnly' => true),
-            array(['subject'], 'string', 'max' => 255),
+            array(['subject', 'key'], 'string', 'max' => 255),
         );
     }
 

@@ -23,6 +23,8 @@ use yii\db\ActiveRecord;
  *
  * @property $allunreadmessages
  * @property $lastmessage
+ * @property MessengerThreads $threads
+ * @property ActiveRecord $user
  */
 class MessengerMessages extends ActiveRecord
 {
@@ -131,5 +133,21 @@ OR
             'body' => 'Body',
             'created_at' => 'Created At',
         );
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getThread()
+    {
+        return $this->hasOne(MessengerThreads::className(), ['id' => 'thread_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(Yii::$app->getModule('messenger')->authorEntity, ['id' => 'user_id']);
     }
 }
