@@ -1,6 +1,10 @@
 {
   "name": "pantera-digital/yii2-realtime-messenger",
   "type": "yii2-extension",
+  "require": {
+    "php": ">=7.2.0",
+    "pantera-digital/yii2-media": "*"
+  },
   "autoload": {
     "psr-4": {
       "pantera\\messenger\\": ""
