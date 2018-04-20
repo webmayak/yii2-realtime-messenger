@@ -2,6 +2,8 @@
 
 namespace pantera\messenger\models;
 
+use pantera\media\behaviors\MediaUploadBehavior;
+use pantera\media\models\Media;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -25,9 +27,24 @@ use yii\db\ActiveRecord;
  * @property $lastmessage
  * @property MessengerThreads $threads
  * @property ActiveRecord $user
+ * @property Media[] $attachments
  */
 class MessengerMessages extends ActiveRecord
 {
+    public function behaviors()
+    {
+        return [
+            'media' => [
+                'class' => MediaUploadBehavior::className(),
+                'buckets' => [
+                    'attachments' => [
+                        'multiple' => true,
+                    ],
+                ],
+            ],
+        ];
+    }
+
     /**
      * @return string the associated database table name
      */
