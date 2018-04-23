@@ -9,6 +9,7 @@
 namespace pantera\messenger\components\api;
 
 
+use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreads;
 use Yii;
 use yii\base\Component;
@@ -46,5 +47,20 @@ class MessengerApi extends Component
             ->select('id')
             ->where(['=', 'key', $key])
             ->scalar();
+    }
+
+    /**
+     * Сбросить флаг приклеивания у всех сообщений в переписки
+     * @param int $threadId
+     */
+    public function resetIsPinnedByThreadId(int $threadId): void
+    {
+        MessengerMessages::updateAll([
+            'is_pinned' => 0,
+        ], [
+            'AND',
+            ['=', 'thread_id', $threadId],
+            ['=', 'is_pinned', 1],
+        ]);
     }
 }
