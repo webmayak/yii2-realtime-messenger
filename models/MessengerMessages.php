@@ -5,7 +5,6 @@ namespace pantera\messenger\models;
 use mikehaertl\tmp\File;
 use pantera\media\behaviors\MediaUploadBehavior;
 use pantera\media\models\Media;
-use function var_dump;
 use Yii;
 use yii\db\ActiveRecord;
 use function preg_match;
@@ -25,6 +24,7 @@ use function preg_match;
  * @property bool $readed [tinyint(4)]
  * @property int $user_min_hide [int(11)]
  * @property int $user_max_hide [int(11)]
+ * @property int $is_pinned
  *
  * @property $allunreadmessages
  * @property $lastmessage
@@ -88,7 +88,7 @@ class MessengerMessages extends ActiveRecord
         // will receive user inputs.
         return array(
             array(['thread_id', 'user_id', 'body'], 'required'),
-            array(['thread_id', 'user_id'], 'number', 'integerOnly' => true),
+            array(['is_pinned', 'thread_id', 'user_id'], 'number', 'integerOnly' => true),
         );
     }
 

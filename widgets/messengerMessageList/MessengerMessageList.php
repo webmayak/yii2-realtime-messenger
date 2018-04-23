@@ -40,7 +40,7 @@ class MessengerMessageList extends Widget
             'query' => $query,
             'pagination' => false,
             'sort' => [
-                'defaultOrder' => ['id' => SORT_DESC],
+                'defaultOrder' => ['is_pinned' => SORT_DESC, 'id' => SORT_DESC],
             ],
         ]);
     }
