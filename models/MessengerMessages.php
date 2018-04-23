@@ -2,10 +2,13 @@
 
 namespace pantera\messenger\models;
 
+use mikehaertl\tmp\File;
 use pantera\media\behaviors\MediaUploadBehavior;
 use pantera\media\models\Media;
+use function var_dump;
 use Yii;
 use yii\db\ActiveRecord;
+use function preg_match;
 
 /**
  * This is the model class for table "{{messenger_messages}}".
@@ -31,6 +34,29 @@ use yii\db\ActiveRecord;
  */
 class MessengerMessages extends ActiveRecord
 {
+    /**
+     * Рендеринг сообщения через twig
+     * @return string
+     */
+    public function renderBody(): string
+    {
+        $file = new File($this->body, '.twig');
+        $result = Yii::$app->view->renderFile($file->getFileName());
+        return $result;
+    }
+
+    /**
+     * Проверить используется ли twig в сообщении
+     * @return bool
+     */
+    public function isTwig(): bool
+    {
+        if (preg_match('/^{{.*}}$/', $this->body)) {
+            return true;
+        }
+        return false;
+    }
+
     public function behaviors()
     {
         return [
