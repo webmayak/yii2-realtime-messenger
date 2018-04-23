@@ -88,7 +88,8 @@ class MessengerMessages extends ActiveRecord
         // will receive user inputs.
         return array(
             array(['thread_id', 'user_id', 'body'], 'required'),
-            array(['is_pinned', 'thread_id', 'user_id'], 'number', 'integerOnly' => true),
+            array(['thread_id', 'user_id'], 'number', 'integerOnly' => true),
+            [['is_pinned'], 'boolean'],
         );
     }
 

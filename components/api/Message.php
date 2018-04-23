@@ -14,12 +14,14 @@ use yii\base\BaseObject;
 
 class Message extends BaseObject
 {
-    /* @var string */
-    private $_body;
-    /* @var int */
-    private $_threadId;
-    /* @var int */
-    private $_userId;
+    /* @var MessengerMessages */
+    private $_message;
+
+    public function init(): void
+    {
+        parent::init();
+        $this->_message = new MessengerMessages();
+    }
 
     /**
      * Установить текст сообщения
@@ -28,7 +30,7 @@ class Message extends BaseObject
      */
     public function setBody(string $body): Message
     {
-        $this->_body = $body;
+        $this->_message->body = $body;
         return $this;
     }
 
@@ -39,7 +41,7 @@ class Message extends BaseObject
      */
     public function setThreadId(int $threadId): Message
     {
-        $this->_threadId = $threadId;
+        $this->_message->thread_id = $threadId;
         return $this;
     }
 
@@ -50,7 +52,18 @@ class Message extends BaseObject
      */
     public function setUserId(int $userId): Message
     {
-        $this->_userId = $userId;
+        $this->_message->user_id = $userId;
+        return $this;
+    }
+
+    /**
+     * Установить флаг прикреплино ли сообщение
+     * @param bool $isPinned
+     * @return Message
+     */
+    public function setIsPinned(bool $isPinned): Message
+    {
+        $this->_message->is_pinned = $isPinned;
         return $this;
     }
 
@@ -58,13 +71,9 @@ class Message extends BaseObject
      * Создание сообщения
      * @return MessengerMessages
      */
-    public function send(): MessengerMessages
+    public function create(): MessengerMessages
     {
-        $message = new MessengerMessages();
-        $message->user_id = $this->_userId;
-        $message->thread_id = $this->_threadId;
-        $message->body = $this->_body;
-        $message->save();
-        return $message;
+        $this->_message->save();
+        return $this->_message;
     }
 }

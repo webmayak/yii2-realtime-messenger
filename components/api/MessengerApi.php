@@ -16,12 +16,23 @@ use yii\base\Component;
 class MessengerApi extends Component
 {
     /**
+     * Инициализирует процес создания сообщения
      * @return Message
      * @throws \yii\base\InvalidConfigException
      */
     public function createMessage(): Message
     {
         return Yii::createObject(Message::className());
+    }
+
+    /**
+     * Инициализирует процес создания треда
+     * @return Thread
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function createThread(): Thread
+    {
+        return Yii::createObject(Thread::className());
     }
 
     /**
