@@ -25,6 +25,7 @@ use function preg_match;
  * @property int $user_min_hide [int(11)]
  * @property int $user_max_hide [int(11)]
  * @property int $is_pinned
+ * @property array $data
  *
  * @property $allunreadmessages
  * @property $lastmessage

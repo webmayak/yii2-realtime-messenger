@@ -11,6 +11,7 @@ namespace pantera\messenger\components\api;
 
 use pantera\messenger\models\MessengerMessages;
 use yii\base\BaseObject;
+use yii\db\JsonExpression;
 
 class Message extends BaseObject
 {
@@ -64,6 +65,17 @@ class Message extends BaseObject
     public function setIsPinned(bool $isPinned): Message
     {
         $this->_message->is_pinned = $isPinned;
+        return $this;
+    }
+
+    /**
+     * Добавить дополнительные данные
+     * @param array $data
+     * @return Message
+     */
+    public function setData(array $data): Message
+    {
+        $this->_message->data = $data;
         return $this;
     }
 
