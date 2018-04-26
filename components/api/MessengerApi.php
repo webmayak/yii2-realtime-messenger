@@ -102,7 +102,7 @@ class MessengerApi extends Component
      * @param int $threadId
      * @return MessengerMessages
      */
-    public function getLastMessageInThread(int $threadId): MessengerMessages
+    public function getLastMessageInThread(int $threadId): ?MessengerMessages
     {
         return MessengerMessages::find()
             ->where(['=', 'thread_id', $threadId])
