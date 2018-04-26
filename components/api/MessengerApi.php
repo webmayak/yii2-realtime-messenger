@@ -13,6 +13,7 @@ use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreads;
 use Yii;
 use yii\base\Component;
+use const SORT_DESC;
 
 class MessengerApi extends Component
 {
@@ -62,5 +63,50 @@ class MessengerApi extends Component
             ['=', 'thread_id', $threadId],
             ['=', 'is_pinned', 1],
         ]);
+    }
+
+    /**
+     * Получить количество сообщений в переписки
+     * @param int $threadId
+     * @return int
+     */
+    public function getCountMessageByThreadId(int $threadId): int
+    {
+        return MessengerMessages::find()
+            ->where(['=', 'thread_id', $threadId])
+            ->count();
+    }
+
+    /**
+     * Получить список пользователей участвующих в переписки
+     * @param int $threadId
+     * @return array
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getUserListInThread(int $threadId): array
+    {
+        $userIds = MessengerMessages::find()
+            ->select('user_id')
+            ->distinct()
+            ->where(['=', 'thread_id', $threadId])
+            ->column();
+        $module = Yii::$app->getModule('messenger');
+        $authorEntity = Yii::createObject($module->authorEntity);
+        return $authorEntity::find()
+            ->where(['IN', 'id', $userIds])
+            ->all();
+    }
+
+    /**
+     * Получить последние сообщение в переписки
+     * @param int $threadId
+     * @return MessengerMessages
+     */
+    public function getLastMessageInThread(int $threadId): MessengerMessages
+    {
+        return MessengerMessages::find()
+            ->where(['=', 'thread_id', $threadId])
+            ->orderBy(['created_at' => SORT_DESC])
+            ->one();
     }
 }
