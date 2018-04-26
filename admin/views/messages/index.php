@@ -38,20 +38,22 @@ $this->title = 'Messenger messages';
                     } else {
                         $to = $model->user_min;
                     }
-                    $to = \common\modules\user\common\models\User::findOne($to);
-                    $fromLink = Html::a($from->profile->name, [
-                        '/user/admin/update',
-                        'id' => $from->id,
-                    ], [
-                        'data-pjax' => 0,
-                    ]);
-                    $toLink = Html::a($to->profile->name, [
-                        '/user/admin/update',
-                        'id' => $to->id,
-                    ], [
-                        'data-pjax' => 0,
-                    ]);
-                    return 'From: ' . $fromLink . '<br>To: ' . $toLink;
+                        $fromLink = Html::a($from->profile->name, [
+                            '/user/admin/update',
+                            'id' => $from->id,
+                        ], [
+                            'data-pjax' => 0,
+                        ]);
+                    if ($to) {
+                        $to = \common\modules\user\common\models\User::findOne($to);
+                        $toLink = Html::a($to->profile->name, [
+                            '/user/admin/update',
+                            'id' => $to->id,
+                        ], [
+                            'data-pjax' => 0,
+                        ]);
+                    }
+                    return 'From: ' . $fromLink . ($to ? '<br>To: ' . $toLink : '');
                 }
             ],
             'body',
