@@ -3,7 +3,8 @@
   "type": "yii2-extension",
   "require": {
     "php": ">=7.2.0",
-    "pantera-digital/yii2-media": "*"
+    "pantera-digital/yii2-media": "*",
+    "p3k/emoji-detector": "^0.2.1"
   },
   "autoload": {
     "psr-4": {
