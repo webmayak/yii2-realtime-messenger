@@ -88,10 +88,19 @@ class MessengerMessages extends ActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            [['body'], 'truncateEmoji'],
             array(['thread_id', 'user_id', 'body'], 'required'),
             array(['thread_id', 'user_id'], 'number', 'integerOnly' => true),
             [['is_pinned'], 'boolean'],
         );
+    }
+
+    public function truncateEmoji($attribute)
+    {
+        $emojiList = \Emoji\detect_emoji($this->{$attribute});
+        foreach ($emojiList as $emoji) {
+            $this->{$attribute} = str_replace($emoji['emoji'], '', $this->{$attribute});
+        }
     }
 
     public function getLastThreadMessage()
