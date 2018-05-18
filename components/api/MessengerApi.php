@@ -106,7 +106,7 @@ class MessengerApi extends Component
     {
         return MessengerMessages::find()
             ->where(['=', 'thread_id', $threadId])
-            ->orderBy(['created_at' => SORT_DESC])
+            ->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC])
             ->one();
     }
 }
