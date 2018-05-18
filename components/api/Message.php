@@ -10,13 +10,16 @@ namespace pantera\messenger\components\api;
 
 
 use pantera\messenger\models\MessengerMessages;
+use Yii;
 use yii\base\BaseObject;
-use yii\db\JsonExpression;
+use function array_key_exists;
 
 class Message extends BaseObject
 {
     /* @var MessengerMessages */
     private $_message;
+    /* @var array Массив масивов файлов которые нужно скопировать в медиа нового сообщения */
+    private $_files = [];
 
     public function init(): void
     {
@@ -80,12 +83,38 @@ class Message extends BaseObject
     }
 
     /**
+     * Добавить файлы к сообщению которые есть на диске
+     * будут просто скопированы в модуль медиа
+     * @param array $files
+     * @param string $bucket Название группы в которую отправить файл
+     * @return Message
+     */
+    public function setFiles(array $files, $bucket): Message
+    {
+        $this->_files[] = [
+            'files' => $files,
+            'bucket' => $bucket,
+        ];
+        return $this;
+    }
+
+    /**
      * Создание сообщения
      * @return MessengerMessages
      */
     public function create(): MessengerMessages
     {
-        $this->_message->save();
+        if ($this->_message->save()) {
+            foreach ($this->_files as $data) {
+                if (array_key_exists('files', $data) && array_key_exists('bucket', $data)) {
+                    foreach ($data['files'] as $file) {
+                        Yii::$app->mediaApi->initNewMedia($this->_message, $data['bucket'])
+                            ->setFile($file)
+                            ->create();
+                    }
+                }
+            }
+        }
         return $this->_message;
     }
 }
