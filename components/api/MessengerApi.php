@@ -42,12 +42,13 @@ class MessengerApi extends Component
      * @param string $key
      * @return int
      */
-    public function getThreadIdByKey(string $key): int
+    public function getThreadIdByKey(string $key): ?int
     {
-        return MessengerThreads::find()
+        $result = MessengerThreads::find()
             ->select('id')
             ->where(['=', 'key', $key])
             ->scalar();
+        return $result ?: null;
     }
 
     /**
