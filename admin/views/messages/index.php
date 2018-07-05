@@ -29,6 +29,13 @@ $this->title = 'Messenger messages';
         'columns' => [
             'id',
             [
+                'attribute' => 'threadKey',
+                'value' => 'thread.key',
+                'filter' => Html::activeTextInput($searchModel, 'threadKey', [
+                        'class' => 'form-control',
+                ])
+            ],
+            [
                 'header' => 'Direction',
                 'format' => 'raw',
                 'value' => function (MessengerMessages $model) {
@@ -38,12 +45,12 @@ $this->title = 'Messenger messages';
                     } else {
                         $to = $model->user_min;
                     }
-                        $fromLink = Html::a($from->profile->name, [
-                            '/user/admin/update',
-                            'id' => $from->id,
-                        ], [
-                            'data-pjax' => 0,
-                        ]);
+                    $fromLink = Html::a($from->profile->name, [
+                        '/user/admin/update',
+                        'id' => $from->id,
+                    ], [
+                        'data-pjax' => 0,
+                    ]);
                     if ($to) {
                         $to = \common\modules\user\common\models\User::findOne($to);
                         $toLink = Html::a($to->profile->name, [

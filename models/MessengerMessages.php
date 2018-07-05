@@ -29,9 +29,9 @@ use function preg_match;
  *
  * @property $allunreadmessages
  * @property $lastmessage
- * @property MessengerThreads $threads
  * @property ActiveRecord $user
  * @property Media[] $attachments
+ * @property MessengerThreads $thread
  */
 class MessengerMessages extends ActiveRecord
 {
