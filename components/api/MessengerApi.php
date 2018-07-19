@@ -42,7 +42,7 @@ class MessengerApi extends Component
      * @param string $key
      * @return int
      */
-    public function getThreadIdByKey(string $key): ?int
+    public function getThreadIdByKey(string $key)
     {
         $result = MessengerThreads::find()
             ->select('id')
@@ -54,8 +54,9 @@ class MessengerApi extends Component
     /**
      * Сбросить флаг приклеивания у всех сообщений в переписки
      * @param int $threadId
+     * @return void
      */
-    public function resetIsPinnedByThreadId(int $threadId): void
+    public function resetIsPinnedByThreadId(int $threadId)
     {
         MessengerMessages::updateAll([
             'is_pinned' => 0,
@@ -103,7 +104,7 @@ class MessengerApi extends Component
      * @param int $threadId
      * @return MessengerMessages
      */
-    public function getLastMessageInThread(int $threadId): ?MessengerMessages
+    public function getLastMessageInThread(int $threadId)
     {
         return MessengerMessages::find()
             ->where(['=', 'thread_id', $threadId])

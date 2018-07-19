@@ -2,6 +2,7 @@
 
 namespace pantera\messenger\api\models;
 
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -23,7 +24,8 @@ class MessengerMessagesSearch extends MessengerMessages
     public function search($params)
     {
         $this->load($params);
-        $query = MessengerMessages::find();
+        $model = Yii::createObject(MessengerMessages::className());
+        $query = $model::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
