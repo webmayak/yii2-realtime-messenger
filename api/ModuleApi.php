@@ -8,8 +8,6 @@ use Yii;
 
 class ModuleApi extends \yii\base\Module
 {
-    public $controllerNamespace = 'pantera\messenger\api\controllers';
-
     public function init()
     {
         parent::init();
