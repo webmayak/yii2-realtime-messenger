@@ -21,10 +21,10 @@ class Message extends BaseObject
     /* @var array Массив масивов файлов которые нужно скопировать в медиа нового сообщения */
     private $_files = [];
 
-    public function init(): void
+    public function init()
     {
         parent::init();
-        $this->_message = new MessengerMessages();
+        $this->_message = Yii::createObject(MessengerMessages::className());
     }
 
     /**

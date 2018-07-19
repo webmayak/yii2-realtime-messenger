@@ -24,8 +24,8 @@ class MessengerMessagesSearch extends MessengerMessages
     public function search($params)
     {
         $this->load($params);
-        $model = Yii::createObject(MessengerMessages::className());
-        $query = $model::find();
+        $object = Yii::createObject(\pantera\messenger\models\MessengerMessages::className());
+        $query = $object::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
@@ -36,7 +36,7 @@ class MessengerMessagesSearch extends MessengerMessages
         if ($this->validate() === false) {
             return $dataProvider;
         }
-        $query->andWhere(['=', MessengerMessages::tableName() . '.thread_id', $this->thread_id]);
+        $query->andWhere(['=', \pantera\messenger\models\MessengerMessages::tableName() . '.thread_id', $this->thread_id]);
         return $dataProvider;
     }
 }

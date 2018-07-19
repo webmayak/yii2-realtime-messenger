@@ -10,6 +10,7 @@ namespace pantera\messenger\components\api;
 
 
 use pantera\messenger\models\MessengerThreads;
+use Yii;
 use yii\base\BaseObject;
 
 class Thread extends BaseObject
@@ -20,7 +21,7 @@ class Thread extends BaseObject
     public function init()
     {
         parent::init();
-        $this->_thread = new MessengerThreads();
+        $this->_thread = Yii::createObject(MessengerThreads::className());
     }
 
     /**

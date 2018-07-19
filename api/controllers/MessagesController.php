@@ -37,6 +37,7 @@ class MessagesController extends Controller
      * @param int $id Идентификатор диалога
      * @return array
      * @throws NotFoundHttpException
+     * @throws \yii\base\InvalidConfigException
      */
     public function actionIndex($id)
     {
@@ -80,10 +81,12 @@ class MessagesController extends Controller
      * @param int $id
      * @return MessengerThreads
      * @throws NotFoundHttpException
+     * @throws \yii\base\InvalidConfigException
      */
     protected function findThreadModel($id)
     {
-        $model = MessengerThreads::findOne($id);
+        $object = Yii::createObject(\pantera\messenger\models\MessengerThreads::className());
+        $model = $object::findOne($id);
         if (is_null($model)) {
             throw new NotFoundHttpException();
         }
