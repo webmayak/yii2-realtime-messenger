@@ -46,6 +46,7 @@ class MessagesController extends Controller
         $searchModel = new MessengerMessagesSearch();
         $searchModel->thread_id = $id;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        Yii::$app->response->headers->set('pagination-total-page', $dataProvider->pagination->getPageCount());
         $models = $dataProvider->getModels();
         $models = array_reverse($models);
         return [

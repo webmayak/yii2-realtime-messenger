@@ -29,14 +29,17 @@ class MessengerMessagesSearch extends MessengerMessages
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
-                'defaultOrder' => ['created_at' => SORT_DESC],
+                'defaultOrder' => ['created_at' => SORT_DESC, 'id' => SORT_DESC],
             ],
-            'pagination' => false,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
         ]);
         if ($this->validate() === false) {
             return $dataProvider;
         }
         $query->andWhere(['=', \pantera\messenger\models\MessengerMessages::tableName() . '.thread_id', $this->thread_id]);
+        $dataProvider->prepare();
         return $dataProvider;
     }
 }
