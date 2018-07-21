@@ -2,6 +2,8 @@
 
 namespace pantera\messenger\api\models;
 
+use Yii;
+
 /**
  * Class MessengerThreads
  * @package pantera\messenger\api\models
@@ -21,7 +23,8 @@ class MessengerThreads extends \pantera\messenger\models\MessengerThreads
 
     public function getLastMessage()
     {
-        return $this->hasOne(MessengerMessages::className(), ['thread_id' => 'id'])
-            ->orderBy([MessengerMessages::tableName() . '.created_at' => SORT_DESC]);
+        $object = Yii::createObject(\pantera\messenger\models\MessengerMessages::className());
+        return $this->hasOne($object::className(), ['thread_id' => 'id'])
+            ->orderBy([$object::tableName() . '.created_at' => SORT_DESC]);
     }
 }

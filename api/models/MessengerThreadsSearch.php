@@ -29,7 +29,7 @@ class MessengerThreadsSearch extends MessengerThreads
         return new ActiveDataProvider([
             'query' => $query,
             'sort' => [
-                'defaultOrder' => ['id' => SORT_DESC],
+                'defaultOrder' => ['last_message_at' => SORT_DESC],
             ],
             'pagination' => false,
         ]);

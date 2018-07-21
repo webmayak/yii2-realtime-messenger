@@ -2,6 +2,8 @@
 
 namespace pantera\messenger\models;
 
+use Yii;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -16,33 +18,28 @@ use yii\db\ActiveRecord;
  * @property integer $hide_from
  * @property string $updated_at [datetime]
  * @property string $key
+ * @property string $last_message_at
  *
  * @property MessengerMessages[] $messengerMessages
+ * @property ActiveQuery $userFrom
  */
 class MessengerThreads extends ActiveRecord
 {
     public static $hide_to;
     public static $hide_from;
 
-    /**
-     * @return string the associated database table name
-     */
     public static function tableName()
     {
         return '{{messenger_threads}}';
     }
 
-    /**
-     * @return array validation rules for model attributes.
-     */
     public function rules()
     {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
-        return array(
-            array(['from', 'to'], 'number', 'integerOnly' => true),
-            array(['subject', 'key'], 'string', 'max' => 255),
-        );
+        return [
+            [['from', 'to'], 'number', 'integerOnly' => true],
+            [['subject', 'key'], 'string', 'max' => 255],
+            [['last_message_at'], 'safe']
+        ];
     }
 
     /**
@@ -62,5 +59,10 @@ class MessengerThreads extends ActiveRecord
     public function getMessengerMessages()
     {
         return $this->hasOne(MessengerMessages::className(), ['thread_id' => 'id']);
+    }
+
+    public function getUserFrom()
+    {
+        return $this->hasOne(Yii::$app->getModule('messenger')->authorEntity, ['id' => 'from']);
     }
 }
