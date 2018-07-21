@@ -10,6 +10,7 @@ namespace pantera\messenger\api\controllers;
 
 use pantera\messenger\api\models\MessengerMessagesSearch;
 use pantera\messenger\api\models\MessengerThreads;
+use pantera\messenger\models\MessengerMessages;
 use Yii;
 use yii\rest\Controller;
 use yii\web\BadRequestHttpException;
@@ -72,7 +73,7 @@ class MessagesController extends Controller
             ->create();
         return [
             'status' => true,
-            'message' => $message,
+            'message' => $this->findModel($message->id),
         ];
     }
 
@@ -86,6 +87,22 @@ class MessagesController extends Controller
     protected function findThreadModel($id)
     {
         $object = Yii::createObject(\pantera\messenger\models\MessengerThreads::className());
+        $model = $object::findOne($id);
+        if (is_null($model)) {
+            throw new NotFoundHttpException();
+        }
+        return $model;
+    }
+
+    /**
+     * @param $id
+     * @return MessengerMessages
+     * @throws NotFoundHttpException
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function findModel($id)
+    {
+        $object = Yii::createObject(MessengerMessages::className());
         $model = $object::findOne($id);
         if (is_null($model)) {
             throw new NotFoundHttpException();

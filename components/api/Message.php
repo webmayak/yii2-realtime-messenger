@@ -12,6 +12,7 @@ namespace pantera\messenger\components\api;
 use pantera\messenger\models\MessengerMessages;
 use Yii;
 use yii\base\BaseObject;
+use yii\db\Expression;
 use function array_key_exists;
 
 class Message extends BaseObject
@@ -114,6 +115,9 @@ class Message extends BaseObject
                     }
                 }
             }
+            $this->_message->thread->updateAttributes([
+                'last_message_at' => new Expression('NOW()'),
+            ]);
         }
         return $this->_message;
     }
