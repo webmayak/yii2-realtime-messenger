@@ -11,6 +11,7 @@ namespace pantera\messenger\components\api;
 
 use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreads;
+use pantera\messenger\Module;
 use Yii;
 use yii\base\Component;
 use const SORT_DESC;
@@ -82,16 +83,21 @@ class MessengerApi extends Component
     /**
      * Получить список пользователей участвующих в переписки
      * @param int $threadId
+     * @param bool $onlyIds Флаг что нужно вернуть только идентификаторы
      * @return array
      * @throws \yii\base\InvalidConfigException
      */
-    public function getUserListInThread(int $threadId): array
+    public function getUserListInThread(int $threadId, bool $onlyIds = false): array
     {
         $userIds = MessengerMessages::find()
             ->select('user_id')
             ->distinct()
             ->where(['=', 'thread_id', $threadId])
             ->column();
+        if ($onlyIds) {
+            return $userIds;
+        }
+        /* @var $module Module */
         $module = Yii::$app->getModule('messenger');
         $authorEntity = Yii::createObject($module->authorEntity);
         return $authorEntity::find()

@@ -5,7 +5,8 @@
     "php": ">=7.2.0",
     "pantera-digital/yii2-media": "*",
     "p3k/emoji-detector": "^0.2.1",
-    "mikehaertl/php-tmpfile": "^1.1"
+    "mikehaertl/php-tmpfile": "^1.1",
+    "yiisoft/yii2-httpclient": "*"
   },
   "autoload": {
     "psr-4": {

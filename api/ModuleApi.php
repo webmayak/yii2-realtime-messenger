@@ -9,7 +9,7 @@ use Yii;
 class ModuleApi extends \yii\base\Module
 {
     /* @var string Адрес сокет сервера */
-    public $nodeServer = '127.0.0.1:8080';
+    public $nodeServer = 'http://127.0.0.1:8080/';
 
     public function init()
     {

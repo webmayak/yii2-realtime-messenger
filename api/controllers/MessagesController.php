@@ -10,8 +10,11 @@ namespace pantera\messenger\api\controllers;
 
 use pantera\messenger\api\models\MessengerMessagesSearch;
 use pantera\messenger\api\models\MessengerThreads;
+use pantera\messenger\api\ModuleApi;
 use pantera\messenger\models\MessengerMessages;
 use Yii;
+use yii\helpers\ArrayHelper;
+use yii\httpclient\Client;
 use yii\rest\Controller;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -58,6 +61,22 @@ class MessagesController extends Controller
     }
 
     /**
+     * Загрузить конкретное сообщение
+     * @param int $threadId Идентификатор диалога
+     * @param int $id Идентификатор нужного сообщения
+     * @return MessengerMessages
+     * @throws ForbiddenHttpException
+     * @throws NotFoundHttpException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionGet($threadId, $id)
+    {
+        $this->findThreadModel($threadId);
+        $model = $this->findModel($id);
+        return $model;
+    }
+
+    /**
      * Создание нового сообщения
      * @throws NotFoundHttpException
      * @throws \yii\base\InvalidConfigException
@@ -75,9 +94,21 @@ class MessagesController extends Controller
             ->setThreadId($thread->id)
             ->setBody(Yii::$app->request->post('message'))
             ->create();
+        $message = $this->findModel($message->id);
+        $userIds = Yii::$app->messengerApi->getUserListInThread($thread->id, true);
+        ArrayHelper::removeValue($userIds, (string)Yii::$app->user->id);
+        $params = [
+            'notifiedUserIds' => $userIds,
+            'threadId' => $message->thread_id,
+            'messageId' => $message->id,
+        ];
+        /* @var $module ModuleApi */
+        $module = Yii::$app->getModule('messenger-api');
+        $client = new Client(['baseUrl' => $module->nodeServer]);
+        $client->post('/new-message', $params)->send();
         return [
             'status' => true,
-            'message' => $this->findModel($message->id),
+            'message' => $message,
         ];
     }
 

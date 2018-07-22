@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require("body-parser");
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
@@ -7,19 +8,25 @@ var clients = {};
 const port = 8080;
 
 server.listen(port);
-app.get('/new-message', function (req, res) {
-    console.log('Request for user with HASH ' + req.query.hash + ' has been geted');
-    sendNotification(req.query.hash, req.query.sender);
-    res.send('')
-
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.post('/new-message', function (req, res) {
+    console.log(req.body.notifiedUserIds);
+    console.log(req.body.messageId);
+    console.log(req.body.threadId);
+    req.body.notifiedUserIds.map((id) => {
+        const client = clients[id];
+        if(client) {
+            client.map((connection) => {
+                connection.emit('messenger:newMessage', {
+                    messageId: req.body.messageId,
+                    threadId: req.body.threadId,
+                });
+            });
+        }
+    });
+    res.send('');
 });
-
-function sendNotification(hash, notification) {
-    for (let i in clients[hash]) {
-        console.log('Send emit to user with HASH: ' + hash);
-        clients[hash][i].emit('notification', notification)
-    }
-}
 
 io.sockets.on('connection', function (client) {
     const userId = client.handshake.query.userId;
