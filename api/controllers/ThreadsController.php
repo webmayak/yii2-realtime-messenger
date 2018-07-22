@@ -14,12 +14,6 @@ use yii\rest\Controller;
 
 class ThreadsController extends Controller
 {
-    public function behaviors()
-    {
-        $behaviors = [];
-        return array_merge(parent::behaviors(), $behaviors);
-    }
-
     protected function verbs()
     {
         return [

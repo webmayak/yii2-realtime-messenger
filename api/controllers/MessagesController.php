@@ -21,12 +21,6 @@ use yii\web\NotFoundHttpException;
 
 class MessagesController extends Controller
 {
-    public function behaviors()
-    {
-        $behaviors = [];
-        return array_merge(parent::behaviors(), $behaviors);
-    }
-
     protected function verbs()
     {
         return [
@@ -103,9 +97,6 @@ class MessagesController extends Controller
         $module = Yii::$app->getModule('messenger-api');
         $client = new Client(['baseUrl' => $module->nodeServer]);
         $client->post('/new-message', $params)->send();
-        return [
-            'status' => true,
-        ];
     }
 
     /**
