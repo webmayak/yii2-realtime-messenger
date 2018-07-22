@@ -14,6 +14,7 @@ use pantera\messenger\models\MessengerMessages;
 use Yii;
 use yii\rest\Controller;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
 class MessagesController extends Controller
@@ -39,6 +40,7 @@ class MessagesController extends Controller
      * @return array
      * @throws NotFoundHttpException
      * @throws \yii\base\InvalidConfigException
+     * @throws ForbiddenHttpException
      */
     public function actionIndex($id)
     {
@@ -60,6 +62,7 @@ class MessagesController extends Controller
      * @throws NotFoundHttpException
      * @throws \yii\base\InvalidConfigException
      * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionCreate()
     {
@@ -84,6 +87,7 @@ class MessagesController extends Controller
      * @return MessengerThreads
      * @throws NotFoundHttpException
      * @throws \yii\base\InvalidConfigException
+     * @throws ForbiddenHttpException
      */
     protected function findThreadModel($id)
     {
@@ -91,6 +95,10 @@ class MessagesController extends Controller
         $model = $object::findOne($id);
         if (is_null($model)) {
             throw new NotFoundHttpException();
+        }
+        //Если ключа диалога нету в доступных для пользователя закроем доступ
+        if (in_array($model->key, Yii::$app->user->identity->getThreadKeyList()) === false) {
+            throw new ForbiddenHttpException();
         }
         return $model;
     }

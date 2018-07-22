@@ -25,7 +25,8 @@ class MessengerThreadsSearch extends MessengerThreads
     {
         $this->load($params);
         $object = Yii::createObject(\pantera\messenger\models\MessengerThreads::className());
-        $query = $object::find();
+        $query = $object::find()
+            ->andWhere(['IN', $object::tableName() . '.key', Yii::$app->user->identity->getThreadKeyList()]);
         return new ActiveDataProvider([
             'query' => $query,
             'sort' => [

@@ -111,4 +111,25 @@ class MessengerApi extends Component
             ->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC])
             ->one();
     }
+
+    /**
+     * Получить количество сообщений которые пользователь невидел
+     * @param int $userId
+     * @return int
+     */
+    public function getCountNotViewedForUser(int $userId): int
+    {
+        return 1;
+    }
+
+    /**
+     * Получить количество сообщений которые пользователь невидел в конкретном диалоге
+     * @param int $userId
+     * @param int $threadId
+     * @return int
+     */
+    public function getCountNotViewedForUserInThread(int $userId, int $threadId): int
+    {
+        return 0;
+    }
 }
