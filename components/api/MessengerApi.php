@@ -9,8 +9,10 @@
 namespace pantera\messenger\components\api;
 
 
+use pantera\messenger\interfaces\MessengerUserInterface;
 use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreads;
+use pantera\messenger\models\MessengerViewed;
 use pantera\messenger\Module;
 use Yii;
 use yii\base\Component;
@@ -120,22 +122,40 @@ class MessengerApi extends Component
 
     /**
      * Получить количество сообщений которые пользователь невидел
-     * @param int $userId
+     * @param MessengerUserInterface $user Пользователь для которого хотим получить
      * @return int
      */
-    public function getCountNotViewedForUser(int $userId): int
+    public function getCountNotViewedForUser(MessengerUserInterface $user): int
     {
-        return 1;
+        $threadKeys = $user->getThreadKeyList();
+        $subQuery = MessengerViewed::find()
+            ->select(MessengerViewed::tableName() . '.message_id')
+            ->andWhere(['=', MessengerViewed::tableName() . '.user_id', $user->getPrimaryKey()]);
+        return MessengerMessages::find()
+            ->joinWith(['thread'])
+            ->andWhere(['!=', MessengerMessages::tableName() . '.user_id', $user->getPrimaryKey()])
+            ->andWhere(['IN', MessengerThreads::tableName() . '.key', $threadKeys])
+            ->andWhere(['NOT IN', MessengerMessages::tableName() . '.id', $subQuery])
+            ->count();
     }
 
     /**
      * Получить количество сообщений которые пользователь невидел в конкретном диалоге
-     * @param int $userId
+     * @param MessengerUserInterface $user
      * @param int $threadId
      * @return int
      */
-    public function getCountNotViewedForUserInThread(int $userId, int $threadId): int
+    public function getCountNotViewedForUserInThread(MessengerUserInterface $user, int $threadId): int
     {
-        return 0;
+        $subQuery = MessengerViewed::find()
+            ->joinWith(['message'])
+            ->select(MessengerViewed::tableName() . '.message_id')
+            ->andWhere(['=', MessengerViewed::tableName() . '.user_id', $user->getPrimaryKey()])
+            ->andWhere(['=', MessengerMessages::tableName() . '.thread_id', $threadId]);
+        return MessengerMessages::find()
+            ->andWhere(['!=', MessengerMessages::tableName() . '.user_id', $user->getPrimaryKey()])
+            ->andWhere(['IN', MessengerMessages::tableName() . '.thread_id', $threadId])
+            ->andWhere(['NOT IN', MessengerMessages::tableName() . '.id', $subQuery])
+            ->count();
     }
 }
