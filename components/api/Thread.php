@@ -12,6 +12,7 @@ namespace pantera\messenger\components\api;
 use pantera\messenger\models\MessengerThreads;
 use Yii;
 use yii\base\BaseObject;
+use yii\web\Application;
 
 class Thread extends BaseObject
 {
@@ -22,7 +23,9 @@ class Thread extends BaseObject
     {
         parent::init();
         $this->_thread = Yii::createObject(MessengerThreads::className());
-        $this->_thread->from = Yii::$app->user->id;
+        if (Yii::$app instanceof Application) {
+            $this->_thread->from = Yii::$app->user->id;
+        }
     }
 
     /**

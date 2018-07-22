@@ -13,7 +13,6 @@ use pantera\messenger\api\models\MessengerThreads;
 use pantera\messenger\api\ModuleApi;
 use pantera\messenger\models\MessengerMessages;
 use Yii;
-use yii\helpers\ArrayHelper;
 use yii\httpclient\Client;
 use yii\rest\Controller;
 use yii\web\BadRequestHttpException;
@@ -94,9 +93,7 @@ class MessagesController extends Controller
             ->setThreadId($thread->id)
             ->setBody(Yii::$app->request->post('message'))
             ->create();
-        $message = $this->findModel($message->id);
         $userIds = Yii::$app->messengerApi->getUserListInThread($thread->id, true);
-        ArrayHelper::removeValue($userIds, (string)Yii::$app->user->id);
         $params = [
             'notifiedUserIds' => $userIds,
             'threadId' => $message->thread_id,
@@ -108,7 +105,6 @@ class MessagesController extends Controller
         $client->post('/new-message', $params)->send();
         return [
             'status' => true,
-            'message' => $message,
         ];
     }
 

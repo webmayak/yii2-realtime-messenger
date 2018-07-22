@@ -13,6 +13,7 @@ use pantera\messenger\models\MessengerMessages;
 use Yii;
 use yii\base\BaseObject;
 use yii\db\Expression;
+use yii\web\Application;
 use function array_key_exists;
 
 class Message extends BaseObject
@@ -26,7 +27,9 @@ class Message extends BaseObject
     {
         parent::init();
         $this->_message = Yii::createObject(MessengerMessages::className());
-        $this->_message->user_id = Yii::$app->user->id;
+        if (Yii::$app instanceof Application) {
+            $this->_message->user_id = Yii::$app->user->id;
+        }
     }
 
     /**
