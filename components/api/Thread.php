@@ -22,6 +22,18 @@ class Thread extends BaseObject
     {
         parent::init();
         $this->_thread = Yii::createObject(MessengerThreads::className());
+        $this->_thread->from = Yii::$app->user->id;
+    }
+
+    /**
+     * Добавить доп данные
+     * @param $data
+     * @return Thread
+     */
+    public function load($data): self
+    {
+        $this->_thread->load($data, '');
+        return $this;
     }
 
     /**
@@ -29,9 +41,20 @@ class Thread extends BaseObject
      * @param string $key
      * @return Thread
      */
-    public function setKey(string $key): Thread
+    public function setKey(string $key): self
     {
         $this->_thread->key = $key;
+        return $this;
+    }
+
+    /**
+     * Установить заголовок диалога
+     * @param $subject
+     * @return $this
+     */
+    public function setSubject($subject): self
+    {
+        $this->_thread->subject = $subject;
         return $this;
     }
 
