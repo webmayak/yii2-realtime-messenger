@@ -26,6 +26,7 @@ class Message extends BaseObject
     {
         parent::init();
         $this->_message = Yii::createObject(MessengerMessages::className());
+        $this->_message->user_id = Yii::$app->user->id;
     }
 
     /**
