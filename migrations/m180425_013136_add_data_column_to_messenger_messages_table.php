@@ -13,7 +13,7 @@ class m180425_013136_add_data_column_to_messenger_messages_table extends Migrati
      */
     public function safeUp()
     {
-        $this->addColumn(MessengerMessages::tableName(), 'data', $this->json()->null());
+        $this->addColumn(MessengerMessages::tableName(), 'data', $this->text());
     }
 
     /**
