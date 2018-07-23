@@ -31,13 +31,13 @@ class ReadController extends Controller
     public function actionIndex()
     {
         array_map(function ($id) {
-            $message = $this->findModel($id);
+            $this->findModel($id);
             $model = new MessengerViewed([
                 'user_id' => Yii::$app->user->id,
                 'message_id' => $id,
             ]);
             $model->save();
-        }, Yii::$app->request->post('ids'));
+        }, Yii::$app->request->post('ids', []));
     }
 
     /**
