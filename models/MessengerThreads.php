@@ -30,7 +30,7 @@ class MessengerThreads extends ActiveRecord
 
     public static function tableName()
     {
-        return '{{messenger_threads}}';
+        return '{{%messenger_threads}}';
     }
 
     public function rules()

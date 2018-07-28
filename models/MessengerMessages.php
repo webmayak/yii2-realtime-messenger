@@ -77,7 +77,7 @@ class MessengerMessages extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{messenger_messages}}';
+        return '{{%messenger_messages}}';
     }
 
     /**

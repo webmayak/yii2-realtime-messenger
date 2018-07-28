@@ -19,7 +19,7 @@ class MessengerViewed extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'messenger_viewed';
+        return '{{%messenger_viewed}}';
     }
 
     /**

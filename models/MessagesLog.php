@@ -39,7 +39,7 @@ class MessagesLog extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{messages_log}}';
+        return '{{%messages_log}}';
     }
 
     /**
