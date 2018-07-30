@@ -28,7 +28,7 @@ class MessengerThreads extends \pantera\messenger\models\MessengerThreads
      * Получить количество не прочитанных сообщений в диалоге
      * @return int
      */
-    public function getCountNotViewed()
+    public function getCountNotViewed(): int
     {
         return MessengerMessages::find()
             ->joinWith(['thread'])
