@@ -35,6 +35,24 @@ use function preg_match;
  */
 class MessengerMessages extends ActiveRecord
 {
+    /* @var string Сценарий когда создаеться пустое сообщение */
+    const SCENARIO_EMPTY = 'scenarioEmpty';
+
+    /**
+     * Формируем сценарии
+     * добавляем новый в котором будет отсутствовать требования заполнять тело сообщения
+     * @return array
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $default = $scenarios[self::SCENARIO_DEFAULT];
+        $empty = $default;
+        unset($empty['body']);
+        $scenarios[self::SCENARIO_EMPTY] = $empty;
+        return $scenarios;
+    }
+
     /**
      * Рендеринг сообщения через twig
      * @return string
@@ -85,14 +103,13 @@ class MessengerMessages extends ActiveRecord
      */
     public function rules()
     {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
-        return array(
+        return [
             [['body'], 'truncateEmoji'],
-            array(['thread_id', 'user_id', 'body'], 'required'),
-            array(['thread_id', 'user_id'], 'number', 'integerOnly' => true),
+            [['body'], 'required', 'on' => self::SCENARIO_DEFAULT],
+            [['thread_id', 'user_id'], 'required'],
+            [['thread_id', 'user_id'], 'number', 'integerOnly' => true],
             [['is_pinned'], 'boolean'],
-        );
+        ];
     }
 
     public function truncateEmoji($attribute)

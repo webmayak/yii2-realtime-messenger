@@ -8,15 +8,15 @@
 
 namespace pantera\messenger\api\controllers;
 
-use pantera\messenger\models\MessengerMessages;
+use pantera\messenger\api\traits\FindModelTrait;
 use pantera\messenger\models\MessengerViewed;
 use Yii;
 use yii\rest\Controller;
-use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
 
 class ReadController extends Controller
 {
+    use FindModelTrait;
+
     protected function verbs()
     {
         return [
@@ -38,26 +38,5 @@ class ReadController extends Controller
             ]);
             $model->save();
         }, Yii::$app->request->post('ids', []));
-    }
-
-    /**
-     * @param $id
-     * @return MessengerMessages
-     * @throws NotFoundHttpException
-     * @throws \yii\base\InvalidConfigException
-     * @throws ForbiddenHttpException
-     */
-    protected function findModel($id)
-    {
-        $object = Yii::createObject(MessengerMessages::className());
-        $model = $object::findOne($id);
-        if (is_null($model)) {
-            throw new NotFoundHttpException();
-        }
-        //Если ключа диалога нету в доступных для пользователя закроем доступ
-        if (in_array($model->thread->key, Yii::$app->user->identity->getThreadKeyList()) === false) {
-            throw new ForbiddenHttpException();
-        }
-        return $model;
     }
 }

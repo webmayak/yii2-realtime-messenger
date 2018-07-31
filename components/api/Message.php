@@ -33,6 +33,17 @@ class Message extends BaseObject
     }
 
     /**
+     * Установить сценарий для модели
+     * @param string $scenario
+     * @return Message
+     */
+    public function setScenario(string $scenario): Message
+    {
+        $this->_message->setScenario($scenario);
+        return $this;
+    }
+
+    /**
      * Установить текст сообщения
      * @param string $body
      * @return Message

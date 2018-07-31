@@ -9,8 +9,8 @@
 namespace pantera\messenger\api\controllers;
 
 use pantera\messenger\api\models\MessengerMessagesSearch;
-use pantera\messenger\api\models\MessengerThreads;
 use pantera\messenger\api\ModuleApi;
+use pantera\messenger\api\traits\FindModelTrait;
 use pantera\messenger\models\MessengerMessages;
 use Yii;
 use yii\httpclient\Client;
@@ -21,11 +21,14 @@ use yii\web\NotFoundHttpException;
 
 class MessagesController extends Controller
 {
+    use FindModelTrait;
+
     protected function verbs()
     {
         return [
             'create' => ['POST'],
             'index' => ['GET'],
+            'get' => ['GET'],
         ];
     }
 
@@ -78,7 +81,7 @@ class MessagesController extends Controller
      */
     public function actionCreate()
     {
-        if (is_null(Yii::$app->request->post('message'))) {
+        if (empty(Yii::$app->request->post('message'))) {
             throw new BadRequestHttpException();
         }
         $thread = $this->findThreadModel(Yii::$app->request->post('threadId'));
@@ -97,43 +100,5 @@ class MessagesController extends Controller
         $module = Yii::$app->getModule('messenger-api');
         $client = new Client(['baseUrl' => $module->nodeServer]);
         $client->post('/new-message', $params)->send();
-    }
-
-    /**
-     * Найти модели диалога по её идентификатору
-     * @param int $id
-     * @return MessengerThreads
-     * @throws NotFoundHttpException
-     * @throws \yii\base\InvalidConfigException
-     * @throws ForbiddenHttpException
-     */
-    protected function findThreadModel($id)
-    {
-        $object = Yii::createObject(\pantera\messenger\models\MessengerThreads::className());
-        $model = $object::findOne($id);
-        if (is_null($model)) {
-            throw new NotFoundHttpException();
-        }
-        //Если ключа диалога нету в доступных для пользователя закроем доступ
-        if (in_array($model->key, Yii::$app->user->identity->getThreadKeyList()) === false) {
-            throw new ForbiddenHttpException();
-        }
-        return $model;
-    }
-
-    /**
-     * @param $id
-     * @return MessengerMessages
-     * @throws NotFoundHttpException
-     * @throws \yii\base\InvalidConfigException
-     */
-    protected function findModel($id)
-    {
-        $object = Yii::createObject(MessengerMessages::className());
-        $model = $object::findOne($id);
-        if (is_null($model)) {
-            throw new NotFoundHttpException();
-        }
-        return $model;
     }
 }
