@@ -9,8 +9,8 @@
 namespace pantera\messenger\api\traits;
 
 
-use pantera\messenger\api\models\MessengerMessages;
-use pantera\messenger\api\models\MessengerThreads;
+use pantera\messenger\models\MessengerMessages;
+use pantera\messenger\models\MessengerThreads;
 use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -27,7 +27,7 @@ trait FindModelTrait
      */
     protected function findThreadModel($id)
     {
-        $object = Yii::createObject(\pantera\messenger\models\MessengerThreads::className());
+        $object = Yii::createObject(MessengerThreads::className());
         $model = $object::findOne($id);
         if (is_null($model)) {
             throw new NotFoundHttpException();
