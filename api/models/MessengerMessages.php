@@ -19,7 +19,8 @@ class MessengerMessages extends \pantera\messenger\models\MessengerMessages
             },
             'isViewed' => function () {
                 return $this->isViewed();
-            }
+            },
+            'attachments',
         ];
     }
 
