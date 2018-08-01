@@ -13,7 +13,7 @@ class m180425_013136_add_data_column_to_messenger_messages_table extends Migrati
      */
     public function safeUp()
     {
-        $this->addColumn(MessengerMessages::tableName(), 'data', $this->text());
+        $this->addColumn('messenger_messages', 'data', $this->text());
     }
 
     /**
@@ -21,6 +21,6 @@ class m180425_013136_add_data_column_to_messenger_messages_table extends Migrati
      */
     public function safeDown()
     {
-        $this->dropColumn(MessengerMessages::tableName(), 'data');
+        $this->dropColumn('messenger_messages', 'data');
     }
 }
