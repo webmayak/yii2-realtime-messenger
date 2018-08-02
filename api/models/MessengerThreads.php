@@ -2,9 +2,7 @@
 
 namespace pantera\messenger\api\models;
 
-use pantera\messenger\models\MessengerViewed;
 use Yii;
-use yii\db\Expression;
 
 /**
  * Class MessengerThreads
@@ -14,33 +12,19 @@ use yii\db\Expression;
  */
 class MessengerThreads extends \pantera\messenger\models\MessengerThreads
 {
+    /* @var int|null Поле которое будет содержать количество не просмотренных сообщений для текушего пользователя */
+    public $countNotViewed;
+
+    const COLUMN_COUNT_NOT_VIEWED_ALIAS = 'countNotViewed';
+
     public function fields()
     {
         return [
             'id',
             'subject',
             'lastMessage',
-            'countNotViewed',
+            MessengerThreads::COLUMN_COUNT_NOT_VIEWED_ALIAS,
         ];
-    }
-
-    /**
-     * Получить количество не прочитанных сообщений в диалоге
-     * @return int
-     */
-    public function getCountNotViewed(): int
-    {
-        return MessengerMessages::find()
-            ->joinWith(['thread'])
-            ->leftJoin(MessengerViewed::tableName(), [
-                'AND',
-                ['=', MessengerViewed::tableName() . '.message_id', new Expression(MessengerMessages::tableName() . '.id')],
-                ['=', MessengerViewed::tableName() . '.user_id', Yii::$app->user->id]
-            ])
-            ->andWhere(['!=', MessengerMessages::tableName() . '.user_id', Yii::$app->user->id])
-            ->andWhere(['=', MessengerMessages::tableName() . '.thread_id', $this->id])
-            ->andWhere(['IS', MessengerViewed::tableName() . '.message_id', null])
-            ->count();
     }
 
     /**
@@ -53,5 +37,13 @@ class MessengerThreads extends \pantera\messenger\models\MessengerThreads
         $object = Yii::createObject(\pantera\messenger\models\MessengerMessages::className());
         return $this->hasOne($object::className(), ['thread_id' => 'id'])
             ->orderBy([$object::tableName() . '.created_at' => SORT_DESC]);
+    }
+
+    /**
+     * @return MessengerThreadsQuery|\yii\db\ActiveQuery
+     */
+    public static function find()
+    {
+        return new MessengerThreadsQuery(get_called_class());
     }
 }

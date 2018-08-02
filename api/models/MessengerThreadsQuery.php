@@ -1,0 +1,34 @@
+<?php
+
+namespace pantera\messenger\api\models;
+
+use pantera\messenger\models\MessengerViewed;
+use yii\db\ActiveQuery;
+use yii\db\Expression;
+
+/**
+ * @see MessengerThreads
+ */
+class MessengerThreadsQuery extends ActiveQuery
+{
+    /**
+     * Добавить к выборке количество не просмотренных сообщений переданного пользователя
+     * @param int $userId Идентификатор пользователя чеи непросмотренные сообщения будем считать
+     * @return MessengerThreadsQuery
+     */
+    public function addSelectCountNotViewedForUserId(int $userId): self
+    {
+        $query = MessengerMessages::find()
+            ->select(new Expression('COUNT(1)'))
+            ->leftJoin(MessengerViewed::tableName(), [
+                'AND',
+                ['=', MessengerViewed::tableName() . '.message_id', new Expression(MessengerMessages::tableName() . '.id')],
+                ['=', MessengerViewed::tableName() . '.user_id', $userId]
+            ])
+            ->andWhere(['!=', MessengerMessages::tableName() . '.user_id', $userId])
+            ->andWhere(['=', MessengerMessages::tableName() . '.thread_id', new Expression(MessengerThreads::tableName() . '.id')])
+            ->andWhere(['IS', MessengerViewed::tableName() . '.message_id', null]);
+        return $this->addSelect(MessengerThreads::tableName() . '.*')
+            ->addSelect([MessengerThreads::COLUMN_COUNT_NOT_VIEWED_ALIAS => $query]);
+    }
+}
