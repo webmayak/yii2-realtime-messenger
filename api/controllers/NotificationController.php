@@ -35,7 +35,7 @@ class NotificationController extends Controller
         $threads = $searchModel->search();
         return [
             'countNotViewed' => $countNotViewed,
-            'thread' => $threads,
+            'threads' => $threads,
         ];
     }
 }
