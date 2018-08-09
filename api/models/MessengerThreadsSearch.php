@@ -27,6 +27,7 @@ class MessengerThreadsSearch extends MessengerThreads
         $this->load($params);
         $object = Yii::createObject(\pantera\messenger\models\MessengerThreads::className());
         $query = $object::find()
+            ->isHasMessages()
             ->addSelectCountNotViewedForUserId(Yii::$app->user->identity->id)
             ->andWhere(['IN', $object::tableName() . '.key', Yii::$app->user->identity->getThreadKeyList()]);
         return new ActiveDataProvider([

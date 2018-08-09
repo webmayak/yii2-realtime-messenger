@@ -31,4 +31,13 @@ class MessengerThreadsQuery extends ActiveQuery
         return $this->addSelect(MessengerThreads::tableName() . '.*')
             ->addSelect([MessengerThreads::COLUMN_COUNT_NOT_VIEWED_ALIAS => $query]);
     }
+
+    /**
+     * Выбрать диалоги где есть сообщения
+     * @return MessengerThreadsQuery
+     */
+    public function isHasMessages(): self
+    {
+        return $this->andWhere(['>', new Expression('(SELECT COUNT(1) FROM ' . MessengerMessages::tableName() . ' WHERE ' . MessengerMessages::tableName() . '.thread_id=' . MessengerThreads::tableName() . '.id' . ')'), 0]);
+    }
 }
