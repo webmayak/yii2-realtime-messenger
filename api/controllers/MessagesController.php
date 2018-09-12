@@ -8,6 +8,7 @@
 
 namespace pantera\messenger\api\controllers;
 
+use Exception;
 use pantera\messenger\api\models\MessengerMessagesSearch;
 use pantera\messenger\api\ModuleApi;
 use pantera\messenger\api\traits\FindModelTrait;
@@ -98,7 +99,11 @@ class MessagesController extends Controller
         ];
         /* @var $module ModuleApi */
         $module = Yii::$app->getModule('messenger-api');
-        $client = new Client(['baseUrl' => $module->nodeServer]);
-        $client->post('/new-message', $params)->send();
+        try {
+            $client = new Client(['baseUrl' => $module->nodeServer]);
+            $client->post('/new-message', $params)->send();
+        } catch (Exception $e) {
+
+        }
     }
 }
