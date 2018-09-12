@@ -13,10 +13,6 @@ use yii\db\ActiveRecord;
  * @property integer $id
  * @property string $subject
  * @property integer $from
- * @property integer $to
- * @property integer $hide_to
- * @property integer $hide_from
- * @property string $updated_at [datetime]
  * @property string $key
  * @property string $last_message_at
  *
@@ -25,9 +21,6 @@ use yii\db\ActiveRecord;
  */
 class MessengerThreads extends ActiveRecord
 {
-    public static $hide_to;
-    public static $hide_from;
-
     public static function tableName()
     {
         return '{{%messenger_threads}}';
@@ -36,7 +29,7 @@ class MessengerThreads extends ActiveRecord
     public function rules()
     {
         return [
-            [['from', 'to'], 'number', 'integerOnly' => true],
+            [['from'], 'number', 'integerOnly' => true],
             [['subject', 'key'], 'string', 'max' => 255],
             [['last_message_at'], 'safe']
         ];
@@ -47,13 +40,11 @@ class MessengerThreads extends ActiveRecord
      */
     public function attributeLabels()
     {
-        return array(
+        return [
             'id' => 'ID',
             'subject' => 'Subject',
             'from' => 'From',
-            'to' => 'To',
-
-        );
+        ];
     }
 
     public function getMessengerMessages()
