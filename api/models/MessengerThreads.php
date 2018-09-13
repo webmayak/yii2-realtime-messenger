@@ -23,6 +23,7 @@ class MessengerThreads extends \pantera\messenger\models\MessengerThreads
             'id',
             'subject',
             'lastMessage',
+            'created_at',
             MessengerThreads::COLUMN_COUNT_NOT_VIEWED_ALIAS,
         ];
     }

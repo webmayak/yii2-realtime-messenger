@@ -15,6 +15,7 @@ use yii\db\ActiveRecord;
  * @property integer $from
  * @property string $key
  * @property string $last_message_at
+ * @property string $created_at
  *
  * @property MessengerMessages[] $messengerMessages
  * @property ActiveQuery $userFrom
@@ -31,7 +32,7 @@ class MessengerThreads extends ActiveRecord
         return [
             [['from'], 'number', 'integerOnly' => true],
             [['subject', 'key'], 'string', 'max' => 255],
-            [['last_message_at'], 'safe']
+            [['last_message_at', 'created_at'], 'safe']
         ];
     }
 

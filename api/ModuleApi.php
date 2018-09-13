@@ -10,6 +10,8 @@ class ModuleApi extends \yii\base\Module
 {
     /* @var string Адрес сокет сервера */
     public $nodeServer = 'http://127.0.0.1:8080/';
+    /* @var boolean Флаг нужно ли показывать диалоги без сообщений */
+    public $threadSearchShowEmpty = false;
 
     public function init()
     {
