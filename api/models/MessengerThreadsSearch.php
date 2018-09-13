@@ -9,16 +9,7 @@ use yii\data\ActiveDataProvider;
 
 class MessengerThreadsSearch extends MessengerThreads
 {
-//    /* @var ModuleApi */
-//    private $_module;
-
     use ModuleTrait;
-
-//    public function init()
-//    {
-//        parent::init();
-//        $this->_module = ModuleApi::getInstance();
-//    }
 
     public function rules()
     {
