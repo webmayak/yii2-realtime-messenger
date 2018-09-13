@@ -77,17 +77,6 @@ class Message extends BaseObject
     }
 
     /**
-     * Установить флаг прикреплино ли сообщение
-     * @param bool $isPinned
-     * @return Message
-     */
-    public function setIsPinned(bool $isPinned): Message
-    {
-        $this->_message->is_pinned = $isPinned;
-        return $this;
-    }
-
-    /**
      * Добавить дополнительные данные
      * @param array $data
      * @return Message

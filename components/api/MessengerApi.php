@@ -55,22 +55,6 @@ class MessengerApi extends Component
     }
 
     /**
-     * Сбросить флаг приклеивания у всех сообщений в переписки
-     * @param int $threadId
-     * @return void
-     */
-    public function resetIsPinnedByThreadId(int $threadId)
-    {
-        MessengerMessages::updateAll([
-            'is_pinned' => 0,
-        ], [
-            'AND',
-            ['=', 'thread_id', $threadId],
-            ['=', 'is_pinned', 1],
-        ]);
-    }
-
-    /**
      * Получить количество сообщений в переписки
      * @param int $threadId
      * @return int
