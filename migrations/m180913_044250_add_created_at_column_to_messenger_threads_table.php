@@ -12,7 +12,7 @@ class m180913_044250_add_created_at_column_to_messenger_threads_table extends Mi
      */
     public function safeUp()
     {
-        $this->addColumn('messenger_threads', 'created_at', $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'));
+        $this->addColumn('{{%messenger_threads}}', 'created_at', $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'));
     }
 
     /**
@@ -20,6 +20,6 @@ class m180913_044250_add_created_at_column_to_messenger_threads_table extends Mi
      */
     public function safeDown()
     {
-        $this->dropColumn('messenger_threads', 'created_at');
+        $this->dropColumn('{{%messenger_threads}}', 'created_at');
     }
 }
