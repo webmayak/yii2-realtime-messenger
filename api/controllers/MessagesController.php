@@ -8,12 +8,13 @@
 
 namespace pantera\messenger\api\controllers;
 
-use Exception;
 use pantera\messenger\api\models\MessengerMessagesSearch;
-use pantera\messenger\api\ModuleApi;
 use pantera\messenger\api\traits\FindModelTrait;
 use pantera\messenger\models\MessengerMessages;
+use pantera\messenger\traits\ModuleTrait;
+use Redis;
 use Yii;
+use yii\helpers\Json;
 use yii\httpclient\Client;
 use yii\rest\Controller;
 use yii\web\BadRequestHttpException;
@@ -23,6 +24,7 @@ use yii\web\NotFoundHttpException;
 class MessagesController extends Controller
 {
     use FindModelTrait;
+    use ModuleTrait;
 
     protected function verbs()
     {
@@ -97,13 +99,18 @@ class MessagesController extends Controller
             'threadId' => $message->thread_id,
             'messageId' => $message->id,
         ];
-        /* @var $module ModuleApi */
-        $module = Yii::$app->getModule('messenger-api');
-        try {
-            $client = new Client(['baseUrl' => $module->nodeServer]);
-            $client->post('/new-message', $params)->send();
-        } catch (Exception $e) {
+        if ($this->moduleApi->useRedis) {
+            $redis = new Redis();
+            $redis->pconnect('localhost', 6379);
+            $params = Json::encode($params);
+            $redis->publish('chat', $params);
+        } else {
+            try {
+                $client = new Client(['baseUrl' => $this->moduleApi->nodeServer]);
+                $client->post('/new-message', $params)->send();
+            } catch (\Exception $e) {
 
+            }
         }
     }
 }

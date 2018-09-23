@@ -12,6 +12,8 @@ class ModuleApi extends \yii\base\Module
     public $nodeServer = 'http://127.0.0.1:8080/';
     /* @var boolean Флаг нужно ли показывать диалоги без сообщений */
     public $threadSearchShowEmpty = false;
+    /* @var boolean Флаг нужно ли для комуникации с нодовй использовать редис */
+    public $useRedis = false;
 
     public function init()
     {
