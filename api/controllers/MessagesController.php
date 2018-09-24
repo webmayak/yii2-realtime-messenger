@@ -8,6 +8,7 @@
 
 namespace pantera\messenger\api\controllers;
 
+use function array_key_exists;
 use pantera\messenger\api\models\MessengerMessagesSearch;
 use pantera\messenger\api\traits\FindModelTrait;
 use pantera\messenger\models\MessengerMessages;
@@ -101,7 +102,10 @@ class MessagesController extends Controller
         ];
         if ($this->moduleApi->useRedis) {
             $redis = new Redis();
-            $redis->pconnect('localhost', 6379);
+            $redis->pconnect($this->moduleApi->redisConfig['host'], $this->moduleApi->redisConfig['port']);
+            if(array_key_exists('password', $this->moduleApi->redisConfig)){
+                $redis->auth($this->moduleApi->redisConfig['password']);
+            }
             $params = Json::encode($params);
             $redis->publish('chat', $params);
         } else {
