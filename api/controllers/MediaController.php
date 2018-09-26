@@ -11,7 +11,10 @@ namespace pantera\messenger\api\controllers;
 use pantera\messenger\api\ModuleApi;
 use pantera\messenger\api\traits\FindModelTrait;
 use pantera\messenger\models\MessengerMessages;
+use pantera\messenger\traits\ModuleTrait;
+use Redis;
 use Yii;
+use yii\helpers\Json;
 use yii\httpclient\Client;
 use yii\rest\Controller;
 use yii\web\BadRequestHttpException;
@@ -22,6 +25,7 @@ use yii\web\UploadedFile;
 class MediaController extends Controller
 {
     use FindModelTrait;
+    use ModuleTrait;
 
     protected function verbs()
     {
@@ -59,8 +63,21 @@ class MediaController extends Controller
             'messageId' => $message->id,
         ];
         /* @var $module ModuleApi */
-        $module = Yii::$app->getModule('messenger-api');
-        $client = new Client(['baseUrl' => $module->nodeServer]);
-        $client->post('/new-message', $params)->send();
+        if ($this->moduleApi->useRedis) {
+            $redis = new Redis();
+            $redis->pconnect($this->moduleApi->redisConfig['host'], $this->moduleApi->redisConfig['port']);
+            if (array_key_exists('password', $this->moduleApi->redisConfig)) {
+                $redis->auth($this->moduleApi->redisConfig['password']);
+            }
+            $params = Json::encode($params);
+            $redis->publish('chat', $params);
+        } else {
+            try {
+                $client = new Client(['baseUrl' => $this->moduleApi->nodeServer]);
+                $client->post('/new-message', $params)->send();
+            } catch (\Exception $e) {
+
+            }
+        }
     }
 }
