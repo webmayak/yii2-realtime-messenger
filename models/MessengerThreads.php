@@ -3,8 +3,8 @@
 namespace pantera\messenger\models;
 
 use Yii;
-use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "{{messenger_threads}}".
@@ -18,7 +18,8 @@ use yii\db\ActiveRecord;
  * @property string $created_at
  *
  * @property MessengerMessages[] $messengerMessages
- * @property ActiveQuery $userFrom
+ * @property IdentityInterface $userFrom
+ * @property MessengerThreadUser[] $relationWithUsers
  */
 class MessengerThreads extends ActiveRecord
 {
@@ -56,5 +57,10 @@ class MessengerThreads extends ActiveRecord
     public function getUserFrom()
     {
         return $this->hasOne(Yii::$app->getModule('messenger')->authorEntity, ['id' => 'from']);
+    }
+
+    public function getRelationWithUsers()
+    {
+        return $this->hasMany(MessengerThreadUser::class, ['thread_id' => 'id']);
     }
 }

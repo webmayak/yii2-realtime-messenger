@@ -2,6 +2,7 @@
 
 namespace pantera\messenger\api\models;
 
+use pantera\messenger\models\MessengerThreadUser;
 use pantera\messenger\traits\ModuleTrait;
 use Yii;
 use yii\base\Model;
@@ -30,8 +31,9 @@ class MessengerThreadsSearch extends MessengerThreads
         $this->load($params);
         $object = Yii::createObject(\pantera\messenger\models\MessengerThreads::className());
         $query = $object::find()
+            ->joinWith(['relationWithUsers'])
             ->addSelectCountNotViewedForUserId(Yii::$app->user->identity->id)
-            ->andWhere(['IN', $object::tableName() . '.key', Yii::$app->user->identity->getThreadKeyList()]);
+            ->andWhere(['=', MessengerThreadUser::tableName() . '.user_id', Yii::$app->user->id]);
         if ($this->moduleApi->threadSearchShowEmpty === false) {
             $query->isHasMessages();
         }
