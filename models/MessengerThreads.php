@@ -15,6 +15,7 @@ use yii\web\IdentityInterface;
  * @property integer $from
  * @property string $last_message_at
  * @property string $created_at
+ * @property string $key
  *
  * @property MessengerMessages[] $messengerMessages
  * @property IdentityInterface $userFrom
@@ -31,8 +32,8 @@ class MessengerThreads extends ActiveRecord
     {
         return [
             [['from'], 'number', 'integerOnly' => true],
-            [['subject'], 'string', 'max' => 255],
-            [['last_message_at', 'created_at'], 'safe']
+            [['subject', 'key'], 'string', 'max' => 255],
+            [['last_message_at', 'created_at'], 'safe'],
         ];
     }
 

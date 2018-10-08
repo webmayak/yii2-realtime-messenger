@@ -43,6 +43,17 @@ class Thread extends BaseObject
     }
 
     /**
+     * Установка ключа
+     * @param string $key
+     * @return Thread
+     */
+    public function setKey(string $key): self
+    {
+        $this->_thread->key = $key;
+        return $this;
+    }
+
+    /**
      * Добавить доп данные
      * @param $data
      * @return Thread
