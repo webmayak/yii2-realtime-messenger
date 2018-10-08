@@ -42,20 +42,6 @@ class MessengerApi extends Component
     }
 
     /**
-     * Получить идентификатор треда по клучю
-     * @param string $key
-     * @return int
-     */
-    public function getThreadIdByKey(string $key)
-    {
-        $result = MessengerThreads::find()
-            ->select('id')
-            ->where(['=', 'key', $key])
-            ->scalar();
-        return $result ?: null;
-    }
-
-    /**
      * Получить количество сообщений в переписки
      * @param int $threadId
      * @return int
