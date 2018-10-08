@@ -21,7 +21,7 @@ class NotificationSearch extends MessengerThreads
         $object = Yii::createObject(\pantera\messenger\models\MessengerThreads::className());
         $query = $object::find()
             ->addSelectCountNotViewedForUserId(Yii::$app->user->identity->id)
-            ->andWhere(['IN', $object::tableName() . '.key', Yii::$app->user->identity->getThreadKeyList()])
+            ->isAvailableForMe()
             ->orderBy([MessengerThreads::COLUMN_COUNT_NOT_VIEWED_ALIAS => SORT_DESC])
             ->having(['>', MessengerThreads::COLUMN_COUNT_NOT_VIEWED_ALIAS, 0])
             ->limit(5);

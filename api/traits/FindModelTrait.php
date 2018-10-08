@@ -12,7 +12,6 @@ namespace pantera\messenger\api\traits;
 use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreads;
 use Yii;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
 trait FindModelTrait
@@ -23,18 +22,17 @@ trait FindModelTrait
      * @return MessengerThreads
      * @throws NotFoundHttpException
      * @throws \yii\base\InvalidConfigException
-     * @throws ForbiddenHttpException
      */
     protected function findThreadModel($id)
     {
+        /* @var $object \pantera\messenger\api\models\MessengerThreads */
         $object = Yii::createObject(MessengerThreads::className());
-        $model = $object::findOne($id);
+        $model = $object::find()
+            ->isAvailableForMe()
+            ->andWhere(['=', $object::tableName() . '.id', $id])
+            ->one();
         if (is_null($model)) {
             throw new NotFoundHttpException();
-        }
-        //Если ключа диалога нету в доступных для пользователя закроем доступ
-        if (in_array($model->key, Yii::$app->user->identity->getThreadKeyList()) === false) {
-            throw new ForbiddenHttpException();
         }
         return $model;
     }

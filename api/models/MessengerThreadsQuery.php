@@ -2,7 +2,9 @@
 
 namespace pantera\messenger\api\models;
 
+use pantera\messenger\models\MessengerThreadUser;
 use pantera\messenger\models\MessengerViewed;
+use Yii;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
 
@@ -11,6 +13,16 @@ use yii\db\Expression;
  */
 class MessengerThreadsQuery extends ActiveQuery
 {
+    /**
+     * Только доступный для текушего пользователя
+     * @return MessengerThreadsQuery
+     */
+    public function isAvailableForMe(): self
+    {
+        return $this->joinWith(['relationWithUsers'])
+            ->andWhere(['=', MessengerThreadUser::tableName() . '.user_id', Yii::$app->user->id]);
+    }
+
     /**
      * Добавить к выборке количество не просмотренных сообщений переданного пользователя
      * @param int $userId Идентификатор пользователя чеи непросмотренные сообщения будем считать
