@@ -9,18 +9,21 @@
 namespace pantera\messenger\components\api;
 
 
+use pantera\messenger\api\traits\FindModelTrait;
 use pantera\messenger\models\MessengerMessages;
-use pantera\messenger\models\MessengerThreads;
 use pantera\messenger\models\MessengerThreadUser;
 use pantera\messenger\models\MessengerViewed;
 use pantera\messenger\Module;
 use Yii;
 use yii\base\Component;
+use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 use const SORT_DESC;
 
 class MessengerApi extends Component
 {
+    use FindModelTrait;
+
     /**
      * Инициализирует процес создания сообщения
      * @return Message
@@ -59,14 +62,14 @@ class MessengerApi extends Component
      * @param bool $onlyIds Флаг что нужно вернуть только идентификаторы
      * @return array
      * @throws \yii\base\InvalidConfigException
+     * @throws \yii\web\NotFoundHttpException
      */
     public function getUserListInThread(int $threadId, bool $onlyIds = false): array
     {
-        $userIds = MessengerMessages::find()
-            ->select('user_id')
-            ->distinct()
-            ->where(['=', 'thread_id', $threadId])
-            ->column();
+        $thread = $this->findThreadModel($threadId);
+        $userIds = ArrayHelper::getColumn($thread->users, function (IdentityInterface $user) {
+            return $user->getId();
+        });
         if ($onlyIds) {
             return $userIds;
         }

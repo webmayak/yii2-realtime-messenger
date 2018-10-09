@@ -20,6 +20,7 @@ use yii\web\IdentityInterface;
  * @property MessengerMessages[] $messengerMessages
  * @property IdentityInterface $userFrom
  * @property MessengerThreadUser[] $relationWithUsers
+ * @property IdentityInterface[] $users
  */
 class MessengerThreads extends ActiveRecord
 {
@@ -62,5 +63,11 @@ class MessengerThreads extends ActiveRecord
     public function getRelationWithUsers()
     {
         return $this->hasMany(MessengerThreadUser::class, ['thread_id' => 'id']);
+    }
+
+    public function getUsers()
+    {
+        return $this->hasMany(Yii::$app->getModule('messenger')->authorEntity, ['id' => 'user_id'])
+            ->viaTable(MessengerThreadUser::tableName(), ['thread_id' => 'id']);
     }
 }
