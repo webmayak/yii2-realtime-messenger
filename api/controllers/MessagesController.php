@@ -47,7 +47,7 @@ class MessagesController extends Controller
      */
     public function actionIndex($id)
     {
-        $thread = $this->findThreadModel($id);
+        $thread = $this->findThreadModel($id, $this->moduleApi->isAdmin());
         $searchModel = new MessengerMessagesSearch();
         $searchModel->thread_id = $id;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

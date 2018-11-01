@@ -24,14 +24,15 @@ class MessengerThreadsSearch extends MessengerThreads
         return Model::scenarios();
     }
 
-    public function search($params)
+    public function search($params, $userId = null)
     {
         /* @var $object MessengerThreads */
         $this->load($params);
         $object = Yii::createObject(\pantera\messenger\models\MessengerThreads::className());
+        $userId = $userId ?: Yii::$app->user->identity->id;
         $query = $object::find()
-            ->isAvailableForMe()
-            ->addSelectCountNotViewedForUserId(Yii::$app->user->identity->id);
+            ->isAvailableForMe($userId)
+            ->addSelectCountNotViewedForUserId($userId);
         if ($this->moduleApi->threadSearchShowEmpty === false) {
             $query->isHasMessages();
         }

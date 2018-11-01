@@ -15,12 +15,14 @@ class MessengerThreadsQuery extends ActiveQuery
 {
     /**
      * Только доступный для текушего пользователя
+     * @param int|null $userId Идентификатор пользователя
      * @return MessengerThreadsQuery
      */
-    public function isAvailableForMe(): self
+    public function isAvailableForMe($userId = null): self
     {
+        $userId = $userId ?: Yii::$app->user->id;
         return $this->joinWith(['relationWithUsers'])
-            ->andWhere(['=', MessengerThreadUser::tableName() . '.user_id', Yii::$app->user->id]);
+            ->andWhere(['=', MessengerThreadUser::tableName() . '.user_id', $userId]);
     }
 
     /**

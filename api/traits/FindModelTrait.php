@@ -19,20 +19,23 @@ trait FindModelTrait
     /**
      * Найти модели диалога по её идентификатору
      * @param int $id
+     * @param bool $isAdmin Флаг что пользователь админ и ему не надо делать проверку на доступность
      * @return MessengerThreads
      * @throws NotFoundHttpException
      * @throws \yii\base\InvalidConfigException
      */
-    protected function findThreadModel($id)
+    protected function findThreadModel($id, $isAdmin = false)
     {
         /* @var $object \pantera\messenger\api\models\MessengerThreads */
         $object = Yii::createObject(MessengerThreads::className());
-        $model = $object::find()
-            ->isAvailableForMe()
-            ->andWhere(['=', $object::tableName() . '.id', $id])
-            ->one();
+        $query = $object::find()
+            ->andWhere(['=', $object::tableName() . '.id', $id]);
+        if ($isAdmin === false) {
+            $query->isAvailableForMe();
+        }
+        $model = $query->one();
         if (is_null($model)) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('1');
         }
         return $model;
     }

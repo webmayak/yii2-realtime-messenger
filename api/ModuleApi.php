@@ -17,11 +17,22 @@ class ModuleApi extends \yii\base\Module
     public $useRedis = false;
     /* @var array Массив настроек для редиса */
     public $redisConfig = [];
+    /* @var string Роль пользователя для котой доступно получать любые данные */
+    public $adminRole;
     /* @var array Массив дефолтных настроек редиса */
     private $_redisDefaultConfig = [
         'host' => 'localhost',
         'port' => '6379',
     ];
+
+    /**
+     * Проверить является ли текуший пользователь админом
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->adminRole && Yii::$app->user->can($this->adminRole);
+    }
 
     public function init()
     {

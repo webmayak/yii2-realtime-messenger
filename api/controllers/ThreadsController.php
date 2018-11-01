@@ -9,11 +9,14 @@
 namespace pantera\messenger\api\controllers;
 
 use pantera\messenger\api\models\MessengerThreadsSearch;
+use pantera\messenger\traits\ModuleTrait;
 use Yii;
 use yii\rest\Controller;
 
 class ThreadsController extends Controller
 {
+    use ModuleTrait;
+
     protected function verbs()
     {
         return [
@@ -27,6 +30,10 @@ class ThreadsController extends Controller
     public function actionIndex()
     {
         $searchModel = new MessengerThreadsSearch();
-        return $searchModel->search(Yii::$app->request->queryParams);
+        $userId = null;
+        if ($this->moduleApi->isAdmin() && Yii::$app->request->get('userId')) {
+            $userId = Yii::$app->request->get('userId');
+        }
+        return $searchModel->search(Yii::$app->request->queryParams, $userId);
     }
 }
