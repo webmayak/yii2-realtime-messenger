@@ -42,14 +42,18 @@ trait FindModelTrait
 
     /**
      * @param $id
+     * @param int|null $threadId Идентификатор диалога
      * @return MessengerMessages
      * @throws NotFoundHttpException
      * @throws \yii\base\InvalidConfigException
      */
-    protected function findModel($id)
+    protected function findModel($id, $threadId = null)
     {
         $object = Yii::createObject(MessengerMessages::className());
-        $model = $object::findOne($id);
+        $model = $object::find()
+            ->andWhere(['=', $object::tableName() . '.id', $id])
+            ->andFilterWhere(['=', $object::tableName() . '.thread_id', $threadId])
+            ->one();
         if (is_null($model)) {
             throw new NotFoundHttpException();
         }

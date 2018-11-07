@@ -65,14 +65,13 @@ class MessagesController extends Controller
      * @param int $threadId Идентификатор диалога
      * @param int $id Идентификатор нужного сообщения
      * @return MessengerMessages
-     * @throws ForbiddenHttpException
      * @throws NotFoundHttpException
      * @throws \yii\base\InvalidConfigException
      */
     public function actionGet($threadId, $id)
     {
         $this->findThreadModel($threadId);
-        $model = $this->findModel($id);
+        $model = $this->findModel($id, $threadId);
         return $model;
     }
 
