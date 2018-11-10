@@ -19,8 +19,10 @@ class ModuleApi extends \yii\base\Module
     public $redisConfig = [];
     /* @var string Роль пользователя для котой доступно получать любые данные */
     public $adminRole;
+    /* @var array Массив доступынх для загрузки расширений файлов */
+    public $mediaAvailableExtensions = ['jpg', 'jpeg', 'png', 'gif'];
     /* @var array Массив дефолтных настроек редиса */
-    private $_redisDefaultConfig = [
+    private $redisDefaultConfig = [
         'host' => 'localhost',
         'port' => '6379',
     ];
@@ -37,15 +39,15 @@ class ModuleApi extends \yii\base\Module
     public function init()
     {
         parent::init();
-        $this->redisConfig = ArrayHelper::merge($this->redisConfig, $this->_redisDefaultConfig);
-        if (Yii::$container->has(MessengerMessages::className()) == false) {
-            Yii::$container->set(MessengerMessages::className(), [
-                'class' => \pantera\messenger\api\models\MessengerMessages::className(),
+        $this->redisConfig = ArrayHelper::merge($this->redisConfig, $this->redisDefaultConfig);
+        if (Yii::$container->has(MessengerMessages::class) == false) {
+            Yii::$container->set(MessengerMessages::class, [
+                'class' => \pantera\messenger\api\models\MessengerMessages::class,
             ]);
         }
-        if (Yii::$container->has(MessengerThreads::className()) == false) {
-            Yii::$container->set(MessengerThreads::className(), [
-                'class' => \pantera\messenger\api\models\MessengerThreads::className(),
+        if (Yii::$container->has(MessengerThreads::class) == false) {
+            Yii::$container->set(MessengerThreads::class, [
+                'class' => \pantera\messenger\api\models\MessengerThreads::class,
             ]);
         }
     }

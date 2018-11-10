@@ -18,7 +18,6 @@ use yii\helpers\Json;
 use yii\httpclient\Client;
 use yii\rest\Controller;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
@@ -39,12 +38,11 @@ class MediaController extends Controller
      * @throws NotFoundHttpException
      * @throws \yii\base\InvalidConfigException
      * @throws BadRequestHttpException
-     * @throws ForbiddenHttpException
      */
     public function actionCreate()
     {
         $file = UploadedFile::getInstanceByName('file');
-        if (is_null($file)) {
+        if (is_null($file) || $this->fileValidate($file) === false) {
             throw new BadRequestHttpException();
         }
         $thread = $this->findThreadModel(Yii::$app->request->post('threadId'));
@@ -79,5 +77,15 @@ class MediaController extends Controller
 
             }
         }
+    }
+
+    /**
+     * Валидация переданого файла
+     * @param UploadedFile $file
+     * @return bool
+     */
+    protected function fileValidate(UploadedFile $file)
+    {
+        return in_array($file->extension, $this->moduleApi->mediaAvailableExtensions);
     }
 }
