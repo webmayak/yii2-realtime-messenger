@@ -3,8 +3,10 @@
 namespace pantera\messenger\api\models;
 
 
+use pantera\media\models\Media;
 use pantera\messenger\models\MessengerViewed;
 use Yii;
+use yii\helpers\Url;
 
 class MessengerMessages extends \pantera\messenger\models\MessengerMessages
 {
@@ -20,8 +22,32 @@ class MessengerMessages extends \pantera\messenger\models\MessengerMessages
             'isViewed' => function () {
                 return $this->isViewed();
             },
-            'attachments',
+            'attachments' => function () {
+                return $this->prepareAttachments();
+            },
         ];
+    }
+
+    /**
+     * Подготовить файла к отдачи
+     * @return array
+     */
+    public function prepareAttachments(): array
+    {
+        return array_map(function (Media $media) {
+            return [
+                'id' => $media->id,
+                'name' => $media->name,
+                'size' => $media->size,
+                'type' => $media->type,
+                'url' => $media->getUrl(),
+                'downloadUrl' => Url::to([
+                    '/messenger/media/download',
+                    'threadId' => $this->thread_id,
+                    'id' => $this->id,
+                ])
+            ];
+        }, $this->attachments);
     }
 
     /**
