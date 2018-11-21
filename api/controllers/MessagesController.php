@@ -8,7 +8,6 @@
 
 namespace pantera\messenger\api\controllers;
 
-use function array_key_exists;
 use pantera\messenger\api\models\MessengerMessagesSearch;
 use pantera\messenger\api\traits\FindModelTrait;
 use pantera\messenger\models\MessengerMessages;
@@ -19,8 +18,8 @@ use yii\helpers\Json;
 use yii\httpclient\Client;
 use yii\rest\Controller;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
+use function array_key_exists;
 
 class MessagesController extends Controller
 {
@@ -43,7 +42,6 @@ class MessagesController extends Controller
      * @return array
      * @throws NotFoundHttpException
      * @throws \yii\base\InvalidConfigException
-     * @throws ForbiddenHttpException
      */
     public function actionIndex($id)
     {
@@ -80,7 +78,6 @@ class MessagesController extends Controller
      * @throws NotFoundHttpException
      * @throws \yii\base\InvalidConfigException
      * @throws BadRequestHttpException
-     * @throws ForbiddenHttpException
      */
     public function actionCreate()
     {
@@ -102,7 +99,7 @@ class MessagesController extends Controller
         if ($this->moduleApi->useRedis) {
             $redis = new Redis();
             $redis->pconnect($this->moduleApi->redisConfig['host'], $this->moduleApi->redisConfig['port']);
-            if(array_key_exists('password', $this->moduleApi->redisConfig)){
+            if (array_key_exists('password', $this->moduleApi->redisConfig)) {
                 $redis->auth($this->moduleApi->redisConfig['password']);
             }
             $params = Json::encode($params);
