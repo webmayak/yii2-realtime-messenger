@@ -110,7 +110,11 @@ class MessengerApi extends Component
             ->andWhere(['=', MessengerViewed::tableName() . '.user_id', $user->getId()]);
         return MessengerMessages::find()
             ->joinWith(['thread', 'thread.relationWithUsers'])
-            ->andWhere(['!=', MessengerMessages::tableName() . '.user_id', $user->getId()])
+            ->andWhere([
+                'OR',
+                ['!=', MessengerMessages::tableName() . '.user_id', $user->getId()],
+                ['IS', MessengerMessages::tableName() . '.user_id', null],
+            ])
             ->andWhere(['IN', MessengerThreadUser::tableName() . '.user_id', $user->getId()])
             ->andWhere(['NOT IN', MessengerMessages::tableName() . '.id', $subQuery])
             ->count();

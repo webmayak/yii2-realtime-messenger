@@ -10,6 +10,7 @@ namespace pantera\messenger\api\controllers;
 
 use pantera\messenger\api\models\NotificationSearch;
 use pantera\messenger\api\traits\FindModelTrait;
+use function var_dump;
 use Yii;
 use yii\rest\Controller;
 
