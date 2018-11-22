@@ -89,6 +89,7 @@ class Thread extends BaseObject
                 $relation->user_id = $userId;
                 $relation->save();
             }
+            $this->_thread->trigger(MessengerThreads::EVENT_AFTER_CREATE);
         }
         return $this->_thread;
     }

@@ -24,6 +24,9 @@ use yii\web\IdentityInterface;
  */
 class MessengerThreads extends ActiveRecord
 {
+    /* @var string Событие вызывается после полного создания диалога */
+    const EVENT_AFTER_CREATE = 'eventAfterCreate';
+
     public static function tableName()
     {
         return '{{%messenger_threads}}';
