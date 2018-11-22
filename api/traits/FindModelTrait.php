@@ -35,7 +35,7 @@ trait FindModelTrait
         }
         $model = $query->one();
         if (is_null($model)) {
-            throw new NotFoundHttpException('1');
+            throw new NotFoundHttpException();
         }
         return $model;
     }
