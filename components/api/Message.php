@@ -67,10 +67,10 @@ class Message extends BaseObject
 
     /**
      * Установить идентификатор автора сообщения
-     * @param int $userId
+     * @param int|null $userId
      * @return Message
      */
-    public function setUserId(int $userId): Message
+    public function setUserId($userId): Message
     {
         $this->_message->user_id = $userId;
         return $this;

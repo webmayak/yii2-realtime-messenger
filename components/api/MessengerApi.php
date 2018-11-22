@@ -9,14 +9,18 @@
 namespace pantera\messenger\components\api;
 
 
+use pantera\messenger\api\ModuleApi;
 use pantera\messenger\api\traits\FindModelTrait;
 use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreadUser;
 use pantera\messenger\models\MessengerViewed;
 use pantera\messenger\Module;
+use Redis;
 use Yii;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
+use yii\httpclient\Client;
 use yii\web\IdentityInterface;
 use const SORT_DESC;
 
@@ -130,5 +134,38 @@ class MessengerApi extends Component
             ->andWhere(['IN', MessengerMessages::tableName() . '.thread_id', $threadId])
             ->andWhere(['NOT IN', MessengerMessages::tableName() . '.id', $subQuery])
             ->count();
+    }
+
+    /**
+     * Отправить сообщения в сокет
+     * @param MessengerMessages $model
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public function sendToSocket(MessengerMessages $model)
+    {
+        /* @var $moduleApi ModuleApi */
+        $moduleApi = Yii::$app->getModule('messenger-api');
+        $userIds = $this->getUserListInThread($model->thread->id, true);
+        $params = [
+            'notifiedUserIds' => $userIds,
+            'threadId' => $model->thread->id,
+            'messageId' => $model->id,
+        ];
+        if ($moduleApi->useRedis) {
+            $redis = new Redis();
+            $redis->pconnect($moduleApi->redisConfig['host'], $moduleApi->redisConfig['port']);
+            if (array_key_exists('password', $moduleApi->redisConfig)) {
+                $redis->auth($moduleApi->redisConfig['password']);
+            }
+            $params = Json::encode($params);
+            $redis->publish('chat', $params);
+        } else {
+            try {
+                $client = new Client(['baseUrl' => $moduleApi->nodeServer]);
+                $client->post('/new-message', $params)->send();
+            } catch (\Exception $e) {
+            }
+        }
     }
 }

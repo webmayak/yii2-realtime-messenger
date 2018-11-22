@@ -97,7 +97,7 @@ class MessengerMessages extends ActiveRecord
         return [
             [['body'], 'truncateEmoji'],
             [['body'], 'required', 'on' => self::SCENARIO_DEFAULT],
-            [['thread_id', 'user_id'], 'required'],
+            [['thread_id'], 'required'],
             [['thread_id', 'user_id'], 'number', 'integerOnly' => true],
         ];
     }

@@ -90,27 +90,6 @@ class MessagesController extends Controller
             ->setThreadId($thread->id)
             ->setBody(Yii::$app->request->post('message'))
             ->create();
-        $userIds = Yii::$app->messengerApi->getUserListInThread($thread->id, true);
-        $params = [
-            'notifiedUserIds' => $userIds,
-            'threadId' => $message->thread_id,
-            'messageId' => $message->id,
-        ];
-        if ($this->moduleApi->useRedis) {
-            $redis = new Redis();
-            $redis->pconnect($this->moduleApi->redisConfig['host'], $this->moduleApi->redisConfig['port']);
-            if (array_key_exists('password', $this->moduleApi->redisConfig)) {
-                $redis->auth($this->moduleApi->redisConfig['password']);
-            }
-            $params = Json::encode($params);
-            $redis->publish('chat', $params);
-        } else {
-            try {
-                $client = new Client(['baseUrl' => $this->moduleApi->nodeServer]);
-                $client->post('/new-message', $params)->send();
-            } catch (\Exception $e) {
-
-            }
-        }
+        Yii::$app->messengerApi->sendToSocket($message);
     }
 }
