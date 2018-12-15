@@ -64,13 +64,14 @@ class MessengerApi extends Component
      * Получить список пользователей участвующих в переписки
      * @param int $threadId
      * @param bool $onlyIds Флаг что нужно вернуть только идентификаторы
+     * @param bool $isAdmin Флаг что пользователь админ и ему не надо делать проверку на доступность
      * @return array
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\web\NotFoundHttpException
      */
-    public function getUserListInThread(int $threadId, bool $onlyIds = false): array
+    public function getUserListInThread(int $threadId, bool $onlyIds = false, $isAdmin = false): array
     {
-        $thread = $this->findThreadModel($threadId);
+        $thread = $this->findThreadModel($threadId, $isAdmin);
         $userIds = ArrayHelper::getColumn($thread->users, function (IdentityInterface $user) {
             return $user->getId();
         });
@@ -143,14 +144,15 @@ class MessengerApi extends Component
     /**
      * Отправить сообщения в сокет
      * @param MessengerMessages $model
+     * @param bool $isAdmin Флаг что пользователь админ и ему не надо делать проверку на доступность
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\web\NotFoundHttpException
      */
-    public function sendToSocket(MessengerMessages $model)
+    public function sendToSocket(MessengerMessages $model, $isAdmin = false)
     {
         /* @var $moduleApi ModuleApi */
         $moduleApi = Yii::$app->getModule('messenger-api');
-        $userIds = $this->getUserListInThread($model->thread->id, true);
+        $userIds = $this->getUserListInThread($model->thread->id, true, $isAdmin);
         $params = [
             'notifiedUserIds' => $userIds,
             'threadId' => $model->thread->id,
