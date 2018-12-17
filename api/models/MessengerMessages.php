@@ -14,6 +14,7 @@ class MessengerMessages extends \pantera\messenger\models\MessengerMessages
     {
         return [
             'id',
+            'user_id',
             'body',
             'created_at',
             'isMy' => function () {
