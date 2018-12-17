@@ -42,9 +42,10 @@ class MessengerThreads extends \pantera\messenger\models\MessengerThreads
 
     /**
      * @return MessengerThreadsQuery|\yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
      */
     public static function find()
     {
-        return new MessengerThreadsQuery(get_called_class());
+        return Yii::createObject(MessengerThreadsQuery::class, [get_called_class()]);
     }
 }
