@@ -1,16 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: singletonn
- * Date: 7/22/18
- * Time: 1:45 PM
- */
 
 namespace pantera\messenger\api;
 
-
 use Yii;
 use yii\base\Widget;
+use yii\helpers\Json;
 use yii\web\View;
 
 class MessengerApiInitWidget extends Widget
@@ -23,10 +17,12 @@ class MessengerApiInitWidget extends Widget
             /* @var $module ModuleApi */
             $module = Yii::$app->getModule('messenger-api');
             $userId = Yii::$app->user->id;
+            $mediaAvailableExtensionsJson = Json::encode($module->mediaAvailableExtensions);
             $js = <<<JS
             let messengerApi = {
                 server: '{$module->nodeServer}',
                 userId: {$userId},
+                mediaAvailableExtensions: {$mediaAvailableExtensionsJson},
             };
 JS;
             $this->view->registerJs($js, View::POS_HEAD);
