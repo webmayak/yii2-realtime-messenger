@@ -10,13 +10,28 @@ namespace pantera\messenger\api\controllers;
 
 use pantera\messenger\api\models\NotificationSearch;
 use pantera\messenger\api\traits\FindModelTrait;
-use function var_dump;
 use Yii;
+use yii\filters\AccessControl;
 use yii\rest\Controller;
 
 class NotificationController extends Controller
 {
     use FindModelTrait;
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['access'] = [
+            'class' => AccessControl::class,
+            'rules' => [
+                [
+                    'allow' => true,
+                    'roles' => ['@'],
+                ],
+            ]
+        ];
+        return $behaviors;
+    }
 
     protected function verbs()
     {
