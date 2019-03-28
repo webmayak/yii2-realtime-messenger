@@ -71,7 +71,7 @@ class MessengerMessages extends ActiveRecord
     {
         return [
             'media' => [
-                'class' => MediaUploadBehavior::className(),
+                'class' => MediaUploadBehavior::class,
                 'buckets' => [
                     'attachments' => [
                         'multiple' => true,
@@ -129,7 +129,7 @@ class MessengerMessages extends ActiveRecord
      */
     public function getThread()
     {
-        return $this->hasOne(MessengerThreads::className(), ['id' => 'thread_id']);
+        return $this->hasOne(MessengerThreads::class, ['id' => 'thread_id']);
     }
 
     /**

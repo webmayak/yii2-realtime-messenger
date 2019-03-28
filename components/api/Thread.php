@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: singletonn
- * Date: 4/23/18
- * Time: 2:28 PM
- */
 
 namespace pantera\messenger\components\api;
-
 
 use pantera\messenger\models\MessengerThreads;
 use pantera\messenger\models\MessengerThreadUser;
@@ -18,16 +11,16 @@ use yii\web\Application;
 class Thread extends BaseObject
 {
     /* @var MessengerThreads */
-    private $_thread;
+    private $thread;
     /* @var array Массив пользователей для которых диалог будет доступен */
-    private $_userIds = [];
+    private $userIds = [];
 
     public function init()
     {
         parent::init();
-        $this->_thread = Yii::createObject(MessengerThreads::className());
+        $this->thread = Yii::createObject(MessengerThreads::class);
         if (Yii::$app instanceof Application) {
-            $this->_thread->from = Yii::$app->user->id;
+            $this->thread->from = Yii::$app->user->id;
         }
     }
 
@@ -38,7 +31,7 @@ class Thread extends BaseObject
      */
     public function setUserIds(array $userIds): self
     {
-        $this->_userIds = $userIds;
+        $this->userIds = $userIds;
         return $this;
     }
 
@@ -49,7 +42,7 @@ class Thread extends BaseObject
      */
     public function setKey(string $key): self
     {
-        $this->_thread->key = $key;
+        $this->thread->key = $key;
         return $this;
     }
 
@@ -60,7 +53,7 @@ class Thread extends BaseObject
      */
     public function load($data): self
     {
-        $this->_thread->load($data, '');
+        $this->thread->load($data, '');
         return $this;
     }
 
@@ -71,7 +64,7 @@ class Thread extends BaseObject
      */
     public function setSubject($subject): self
     {
-        $this->_thread->subject = $subject;
+        $this->thread->subject = $subject;
         return $this;
     }
 
@@ -82,15 +75,15 @@ class Thread extends BaseObject
      */
     public function create(): MessengerThreads
     {
-        if ($this->_thread->save()) {
-            foreach ($this->_userIds as $userId) {
+        if ($this->thread->save()) {
+            foreach ($this->userIds as $userId) {
                 $relation = Yii::createObject(MessengerThreadUser::className());
-                $relation->thread_id = $this->_thread->id;
+                $relation->thread_id = $this->thread->id;
                 $relation->user_id = $userId;
                 $relation->save();
             }
-            $this->_thread->trigger(MessengerThreads::EVENT_AFTER_CREATE);
+            $this->thread->trigger(MessengerThreads::EVENT_AFTER_CREATE);
         }
-        return $this->_thread;
+        return $this->thread;
     }
 }

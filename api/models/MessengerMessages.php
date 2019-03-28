@@ -2,7 +2,6 @@
 
 namespace pantera\messenger\api\models;
 
-
 use pantera\media\models\Media;
 use pantera\messenger\models\MessengerViewed;
 use Yii;

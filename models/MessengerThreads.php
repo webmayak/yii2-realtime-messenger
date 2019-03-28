@@ -55,7 +55,7 @@ class MessengerThreads extends ActiveRecord
 
     public function getMessengerMessages()
     {
-        return $this->hasOne(MessengerMessages::className(), ['thread_id' => 'id']);
+        return $this->hasOne(MessengerMessages::class, ['thread_id' => 'id']);
     }
 
     public function getUserFrom()

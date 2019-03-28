@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: singletonn
- * Date: 7/17/18
- * Time: 10:52 PM
- */
 
 namespace pantera\messenger\api\controllers;
 
@@ -12,14 +6,10 @@ use pantera\messenger\api\models\MessengerMessagesSearch;
 use pantera\messenger\api\traits\FindModelTrait;
 use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\traits\ModuleTrait;
-use Redis;
 use Yii;
-use yii\helpers\Json;
-use yii\httpclient\Client;
 use yii\rest\Controller;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
-use function array_key_exists;
 
 class MessagesController extends Controller
 {

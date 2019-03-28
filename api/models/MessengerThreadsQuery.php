@@ -64,6 +64,10 @@ class MessengerThreadsQuery extends ActiveQuery
      */
     public function isHasMessages(): self
     {
-        return $this->andWhere(['>', new Expression('(SELECT COUNT(1) FROM ' . MessengerMessages::tableName() . ' WHERE ' . MessengerMessages::tableName() . '.thread_id=' . MessengerThreads::tableName() . '.id' . ')'), 0]);
+        $sql = '(SELECT 
+                    COUNT(1) 
+                FROM ' . MessengerMessages::tableName() . ' 
+                WHERE ' . MessengerMessages::tableName() . '.thread_id=' . MessengerThreads::tableName() . '.id' . ')';
+        return $this->andWhere(['>', new Expression($sql), 0]);
     }
 }

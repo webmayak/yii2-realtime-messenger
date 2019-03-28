@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: singletonn
- * Date: 7/17/18
- * Time: 10:52 PM
- */
 
 namespace pantera\messenger\api\controllers;
 

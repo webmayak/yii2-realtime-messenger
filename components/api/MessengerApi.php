@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: singletonn
- * Date: 4/23/18
- * Time: 10:20 AM
- */
 
 namespace pantera\messenger\components\api;
-
 
 use pantera\messenger\api\ModuleApi;
 use pantera\messenger\api\traits\FindModelTrait;
@@ -22,7 +15,6 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\httpclient\Client;
 use yii\web\IdentityInterface;
-use const SORT_DESC;
 
 class MessengerApi extends Component
 {
@@ -35,7 +27,7 @@ class MessengerApi extends Component
      */
     public function createMessage(): Message
     {
-        return Yii::createObject(Message::className());
+        return Yii::createObject(Message::class);
     }
 
     /**
@@ -45,7 +37,7 @@ class MessengerApi extends Component
      */
     public function createThread(): Thread
     {
-        return Yii::createObject(Thread::className());
+        return Yii::createObject(Thread::class);
     }
 
     /**

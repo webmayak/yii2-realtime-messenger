@@ -31,7 +31,13 @@ class MessengerViewed extends \yii\db\ActiveRecord
             [['user_id', 'message_id'], 'required'],
             [['user_id', 'message_id'], 'integer'],
             [['user_id', 'message_id'], 'unique', 'targetAttribute' => ['user_id', 'message_id']],
-            [['message_id'], 'exist', 'skipOnError' => true, 'targetClass' => MessengerMessages::className(), 'targetAttribute' => ['message_id' => 'id']],
+            [
+                ['message_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => MessengerMessages::class,
+                'targetAttribute' => ['message_id' => 'id']
+            ],
         ];
     }
 
@@ -52,7 +58,7 @@ class MessengerViewed extends \yii\db\ActiveRecord
      */
     public function getMessage()
     {
-        $object = Yii::createObject(MessengerMessages::className());
-        return $this->hasOne($object::className(), ['id' => 'message_id']);
+        $object = Yii::createObject(MessengerMessages::class);
+        return $this->hasOne(get_class($object), ['id' => 'message_id']);
     }
 }

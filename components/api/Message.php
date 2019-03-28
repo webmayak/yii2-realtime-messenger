@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: singletonn
- * Date: 4/23/18
- * Time: 10:23 AM
- */
 
 namespace pantera\messenger\components\api;
-
 
 use pantera\messenger\models\MessengerMessages;
 use Yii;
@@ -19,16 +12,16 @@ use function array_key_exists;
 class Message extends BaseObject
 {
     /* @var MessengerMessages */
-    private $_message;
+    private $message;
     /* @var array Массив масивов файлов которые нужно скопировать в медиа нового сообщения */
-    private $_files = [];
+    private $files = [];
 
     public function init()
     {
         parent::init();
-        $this->_message = Yii::createObject(MessengerMessages::className());
+        $this->message = Yii::createObject(MessengerMessages::class);
         if (Yii::$app instanceof Application) {
-            $this->_message->user_id = Yii::$app->user->id;
+            $this->message->user_id = Yii::$app->user->id;
         }
     }
 
@@ -39,7 +32,7 @@ class Message extends BaseObject
      */
     public function setScenario(string $scenario): Message
     {
-        $this->_message->setScenario($scenario);
+        $this->message->setScenario($scenario);
         return $this;
     }
 
@@ -50,7 +43,7 @@ class Message extends BaseObject
      */
     public function setBody(string $body): Message
     {
-        $this->_message->body = $body;
+        $this->message->body = $body;
         return $this;
     }
 
@@ -61,7 +54,7 @@ class Message extends BaseObject
      */
     public function setThreadId(int $threadId): Message
     {
-        $this->_message->thread_id = $threadId;
+        $this->message->thread_id = $threadId;
         return $this;
     }
 
@@ -72,7 +65,7 @@ class Message extends BaseObject
      */
     public function setUserId($userId): Message
     {
-        $this->_message->user_id = $userId;
+        $this->message->user_id = $userId;
         return $this;
     }
 
@@ -83,7 +76,7 @@ class Message extends BaseObject
      */
     public function setData(array $data): Message
     {
-        $this->_message->data = $data;
+        $this->message->data = $data;
         return $this;
     }
 
@@ -96,7 +89,7 @@ class Message extends BaseObject
      */
     public function setFiles(array $files, $bucket): Message
     {
-        $this->_files[] = [
+        $this->files[] = [
             'files' => $files,
             'bucket' => $bucket,
         ];
@@ -109,20 +102,20 @@ class Message extends BaseObject
      */
     public function create(): MessengerMessages
     {
-        if ($this->_message->save()) {
-            foreach ($this->_files as $data) {
+        if ($this->message->save()) {
+            foreach ($this->files as $data) {
                 if (array_key_exists('files', $data) && array_key_exists('bucket', $data)) {
                     foreach ($data['files'] as $file) {
-                        Yii::$app->mediaApi->initNewMedia($this->_message, $data['bucket'])
+                        Yii::$app->mediaApi->initNewMedia($this->message, $data['bucket'])
                             ->setFile($file)
                             ->create();
                     }
                 }
             }
-            $this->_message->thread->updateAttributes([
+            $this->message->thread->updateAttributes([
                 'last_message_at' => new Expression('NOW()'),
             ]);
         }
-        return $this->_message;
+        return $this->message;
     }
 }

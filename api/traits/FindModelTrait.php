@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: singletonn
- * Date: 7/31/18
- * Time: 8:44 PM
- */
 
 namespace pantera\messenger\api\traits;
-
 
 use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreads;
@@ -27,7 +20,7 @@ trait FindModelTrait
     protected function findThreadModel($id, $isAdmin = false)
     {
         /* @var $object \pantera\messenger\api\models\MessengerThreads */
-        $object = Yii::createObject(MessengerThreads::className());
+        $object = Yii::createObject(MessengerThreads::class);
         $query = $object::find()
             ->andWhere(['=', $object::tableName() . '.id', $id]);
         if ($isAdmin === false) {
@@ -49,7 +42,7 @@ trait FindModelTrait
      */
     protected function findModel($id, $threadId = null)
     {
-        $object = Yii::createObject(MessengerMessages::className());
+        $object = Yii::createObject(MessengerMessages::class);
         $model = $object::find()
             ->andWhere(['=', $object::tableName() . '.id', $id])
             ->andFilterWhere(['=', $object::tableName() . '.thread_id', $threadId])

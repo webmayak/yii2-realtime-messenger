@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: singletonn
- * Date: 7/22/18
- * Time: 1:08 PM
- */
 
 namespace pantera\messenger\api;
-
 
 use yii\web\AssetBundle;
 

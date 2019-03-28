@@ -48,7 +48,13 @@ class MessengerThreadUser extends \yii\db\ActiveRecord
             [['thread_id', 'user_id'], 'integer'],
             [['created_at'], 'safe'],
             [['thread_id', 'user_id'], 'unique', 'targetAttribute' => ['thread_id', 'user_id']],
-            [['thread_id'], 'exist', 'skipOnError' => true, 'targetClass' => MessengerThreads::className(), 'targetAttribute' => ['thread_id' => 'id']],
+            [
+                ['thread_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => MessengerThreads::class,
+                'targetAttribute' => ['thread_id' => 'id']
+            ],
         ];
     }
 
@@ -69,7 +75,7 @@ class MessengerThreadUser extends \yii\db\ActiveRecord
      */
     public function getThread()
     {
-        return $this->hasOne(MessengerThreads::className(), ['id' => 'thread_id']);
+        return $this->hasOne(MessengerThreads::class, ['id' => 'thread_id']);
     }
 
     public function getUser()

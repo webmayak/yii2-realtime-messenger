@@ -38,7 +38,11 @@ class MessengerMessagesSearch extends MessengerMessages
         if ($this->validate() === false) {
             return $dataProvider;
         }
-        $query->andWhere(['=', \pantera\messenger\models\MessengerMessages::tableName() . '.thread_id', $this->thread_id]);
+        $query->andWhere([
+            '=',
+            \pantera\messenger\models\MessengerMessages::tableName() . '.thread_id',
+            $this->thread_id
+        ]);
         $dataProvider->prepare();
         return $dataProvider;
     }
