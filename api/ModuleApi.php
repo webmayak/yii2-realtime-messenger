@@ -25,6 +25,7 @@ class ModuleApi extends \yii\base\Module
     private $redisDefaultConfig = [
         'host' => 'localhost',
         'port' => '6379',
+        'chanel' => 'chat',
     ];
 
     /**
@@ -39,7 +40,7 @@ class ModuleApi extends \yii\base\Module
     public function init()
     {
         parent::init();
-        $this->redisConfig = ArrayHelper::merge($this->redisConfig, $this->redisDefaultConfig);
+        $this->redisConfig = ArrayHelper::merge($this->redisDefaultConfig, $this->redisConfig);
         if (Yii::$container->has(MessengerMessages::class) == false) {
             Yii::$container->set(MessengerMessages::class, [
                 'class' => \pantera\messenger\api\models\MessengerMessages::class,

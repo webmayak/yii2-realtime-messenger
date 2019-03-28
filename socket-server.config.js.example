@@ -1,0 +1,12 @@
+module.exports = Object.freeze({
+    port: 8008,
+    ssl: {
+        enable: false,
+        pathToKey: '',
+        pathToCert: '',
+    },
+    redis: {
+        password: null,
+        chanel: 'chat',
+    }
+});

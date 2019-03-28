@@ -165,7 +165,7 @@ class MessengerApi extends Component
                 $redis->auth($moduleApi->redisConfig['password']);
             }
             $params = Json::encode($params);
-            $redis->publish('chat', $params);
+            $redis->publish($moduleApi->redisConfig['chanel'], $params);
         } else {
             try {
                 $client = new Client(['baseUrl' => $moduleApi->nodeServer]);
