@@ -15,11 +15,17 @@ use pantera\messenger\Module;
  */
 trait ModuleTrait
 {
+    /**
+     * @return ModuleApi|null
+     */
     public function getModuleApi()
     {
         return ModuleApi::getInstance();
     }
 
+    /**
+     * @return Module|null
+     */
     public function getModule()
     {
         return Module::getInstance();

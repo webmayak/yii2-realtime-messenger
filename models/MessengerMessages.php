@@ -2,9 +2,11 @@
 
 namespace pantera\messenger\models;
 
+use function Emoji\detect_emoji;
 use mikehaertl\tmp\File;
 use pantera\media\behaviors\MediaUploadBehavior;
 use pantera\media\models\Media;
+use pantera\messenger\traits\ModuleTrait;
 use Yii;
 use yii\db\ActiveRecord;
 use function preg_match;
@@ -26,6 +28,8 @@ use function preg_match;
  */
 class MessengerMessages extends ActiveRecord
 {
+    use ModuleTrait;
+
     /* @var string Сценарий когда создаеться пустое сообщение */
     const SCENARIO_EMPTY = 'scenarioEmpty';
 
@@ -104,7 +108,10 @@ class MessengerMessages extends ActiveRecord
 
     public function truncateEmoji($attribute)
     {
-        $emojiList = \Emoji\detect_emoji($this->{$attribute});
+        if ($this->getModuleApi() && !$this->getModuleApi()->truncateEmoji) {
+            return null;
+        }
+        $emojiList = detect_emoji($this->{$attribute});
         foreach ($emojiList as $emoji) {
             $this->{$attribute} = str_replace($emoji['emoji'], '', $this->{$attribute});
         }

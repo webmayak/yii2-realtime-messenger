@@ -5,9 +5,10 @@ namespace pantera\messenger\api;
 use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreads;
 use Yii;
+use yii\base\Module;
 use yii\helpers\ArrayHelper;
 
-class ModuleApi extends \yii\base\Module
+class ModuleApi extends Module
 {
     /* @var string Адрес сокет сервера */
     public $nodeServer = 'http://127.0.0.1:8080/';
@@ -27,6 +28,8 @@ class ModuleApi extends \yii\base\Module
         'port' => '6379',
         'chanel' => 'chat',
     ];
+    /* @var bool Флаг нужно ли вырезать эмоджи в сообщениях */
+    public $truncateEmoji = true;
 
     /**
      * Проверить является ли текуший пользователь админом
