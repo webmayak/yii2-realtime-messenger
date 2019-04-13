@@ -64,7 +64,7 @@ class Thread extends BaseObject
      */
     public function setSubject($subject): self
     {
-        $this->thread->subject = $subject;
+        $this->thread->subject = mb_substr($subject, 0, 255, 'UTF-8');
         return $this;
     }
 
