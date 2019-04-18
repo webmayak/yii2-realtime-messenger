@@ -150,20 +150,20 @@ class MessengerApi extends Component
             'threadId' => $model->thread->id,
             'messageId' => $model->id,
         ];
-        if ($moduleApi->useRedis) {
-            $redis = new Redis();
-            $redis->pconnect($moduleApi->redisConfig['host'], $moduleApi->redisConfig['port']);
-            if (array_key_exists('password', $moduleApi->redisConfig)) {
-                $redis->auth($moduleApi->redisConfig['password']);
-            }
-            $params = Json::encode($params);
-            $redis->publish($moduleApi->redisConfig['chanel'], $params);
-        } else {
-            try {
+        try {
+            if ($moduleApi->useRedis) {
+                $redis = new Redis();
+                $redis->pconnect($moduleApi->redisConfig['host'], $moduleApi->redisConfig['port']);
+                if (array_key_exists('password', $moduleApi->redisConfig)) {
+                    $redis->auth($moduleApi->redisConfig['password']);
+                }
+                $params = Json::encode($params);
+                $redis->publish($moduleApi->redisConfig['chanel'], $params);
+            } else {
                 $client = new Client(['baseUrl' => $moduleApi->nodeServer]);
                 $client->post('/new-message', $params)->send();
-            } catch (\Exception $e) {
             }
+        } catch (\Exception $e) {
         }
     }
 }
