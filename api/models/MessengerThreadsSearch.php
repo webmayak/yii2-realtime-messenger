@@ -6,6 +6,7 @@ use pantera\messenger\traits\ModuleTrait;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\db\Expression;
 
 class MessengerThreadsSearch extends MessengerThreads
 {
@@ -28,7 +29,7 @@ class MessengerThreadsSearch extends MessengerThreads
     {
         /* @var $object MessengerThreads */
         $this->load($params);
-        $object = Yii::createObject(\pantera\messenger\models\MessengerThreads::className());
+        $object = Yii::createObject(\pantera\messenger\models\MessengerThreads::class);
         $userId = $userId ?: Yii::$app->user->identity->id;
         $query = $object::find()
             ->isAvailableForMe($userId)
@@ -36,10 +37,18 @@ class MessengerThreadsSearch extends MessengerThreads
         if ($this->moduleApi->threadSearchShowEmpty === false) {
             $query->isHasMessages();
         }
+        $sortExpression = new Expression('IF(' . MessengerThreads::tableName() . '.`last_message_at`,
+         ' . MessengerThreads::tableName() . '.`last_message_at`,
+          ' . MessengerThreads::tableName() . '.`created_at`) DESC');
         return new ActiveDataProvider([
             'query' => $query,
             'sort' => [
-                'defaultOrder' => ['last_message_at' => SORT_DESC],
+                'defaultOrder' => ['default' => SORT_DESC],
+                'attributes' => [
+                    'default' => [
+                        'desc' => [$sortExpression],
+                    ],
+                ],
             ],
             'pagination' => false,
         ]);
