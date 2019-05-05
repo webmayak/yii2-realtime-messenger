@@ -2,28 +2,50 @@
 
 namespace pantera\messenger\components\api;
 
+use Exception;
 use pantera\messenger\api\ModuleApi;
 use pantera\messenger\api\traits\FindModelTrait;
 use pantera\messenger\models\MessengerMessages;
+use pantera\messenger\models\MessengerThreads;
 use pantera\messenger\models\MessengerThreadUser;
 use pantera\messenger\models\MessengerViewed;
 use pantera\messenger\Module;
 use Redis;
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
+use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\httpclient\Client;
 use yii\web\IdentityInterface;
+use yii\web\NotFoundHttpException;
 
 class MessengerApi extends Component
 {
     use FindModelTrait;
 
     /**
+     * Получить последний активный диалог пользователя
+     * @param IdentityInterface $user
+     * @return MessengerThreads|null
+     * @throws InvalidConfigException
+     */
+    public function getLastThreadByUser(IdentityInterface $user)
+    {
+        $sortExpression = new Expression('IF(' . MessengerThreads::tableName() . '.`last_message_at`,
+         ' . MessengerThreads::tableName() . '.`last_message_at`,
+          ' . MessengerThreads::tableName() . '.`created_at`) DESC');
+        return \pantera\messenger\api\models\MessengerThreads::find()
+            ->isAvailableForMe($user->getId())
+            ->orderBy($sortExpression)
+            ->one();
+    }
+
+    /**
      * Инициализирует процес создания сообщения
      * @return Message
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function createMessage(): Message
     {
@@ -33,7 +55,7 @@ class MessengerApi extends Component
     /**
      * Инициализирует процес создания треда
      * @return Thread
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function createThread(): Thread
     {
@@ -58,8 +80,8 @@ class MessengerApi extends Component
      * @param bool $onlyIds Флаг что нужно вернуть только идентификаторы
      * @param bool $isAdmin Флаг что пользователь админ и ему не надо делать проверку на доступность
      * @return array
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\web\NotFoundHttpException
+     * @throws InvalidConfigException
+     * @throws NotFoundHttpException
      */
     public function getUserListInThread(int $threadId, bool $onlyIds = false, $isAdmin = false): array
     {
@@ -137,8 +159,8 @@ class MessengerApi extends Component
      * Отправить сообщения в сокет
      * @param MessengerMessages $model
      * @param bool $isAdmin Флаг что пользователь админ и ему не надо делать проверку на доступность
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\web\NotFoundHttpException
+     * @throws InvalidConfigException
+     * @throws NotFoundHttpException
      */
     public function sendToSocket(MessengerMessages $model, $isAdmin = false)
     {
@@ -163,7 +185,7 @@ class MessengerApi extends Component
                 $client = new Client(['baseUrl' => $moduleApi->nodeServer]);
                 $client->post('/new-message', $params)->send();
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
         }
     }
 }
