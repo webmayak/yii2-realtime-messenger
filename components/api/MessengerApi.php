@@ -36,7 +36,9 @@ class MessengerApi extends Component
         $sortExpression = new Expression('IF(' . MessengerThreads::tableName() . '.`last_message_at`,
          ' . MessengerThreads::tableName() . '.`last_message_at`,
           ' . MessengerThreads::tableName() . '.`created_at`) DESC');
-        return \pantera\messenger\api\models\MessengerThreads::find()
+        /* @var $object \pantera\messenger\api\models\MessengerThreads */
+        $object = Yii::createObject(MessengerThreads::class);
+        return $object::find()
             ->isAvailableForMe($user->getId())
             ->orderBy($sortExpression)
             ->one();
