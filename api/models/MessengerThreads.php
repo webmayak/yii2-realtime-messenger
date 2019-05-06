@@ -3,6 +3,7 @@
 namespace pantera\messenger\api\models;
 
 use Yii;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * Class MessengerThreads
@@ -17,6 +18,19 @@ class MessengerThreads extends \pantera\messenger\models\MessengerThreads
 
     const COLUMN_COUNT_NOT_VIEWED_ALIAS = 'countNotViewed';
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => AttributeTypecastBehavior::class,
+                'typecastAfterFind' => true,
+                'attributeTypes' => [
+                    self::COLUMN_COUNT_NOT_VIEWED_ALIAS => AttributeTypecastBehavior::TYPE_INTEGER,
+                ],
+            ],
+        ];
+    }
+
     public function fields()
     {
         return [
@@ -24,7 +38,7 @@ class MessengerThreads extends \pantera\messenger\models\MessengerThreads
             'subject',
             'lastMessage',
             'created_at',
-            MessengerThreads::COLUMN_COUNT_NOT_VIEWED_ALIAS,
+            self::COLUMN_COUNT_NOT_VIEWED_ALIAS,
         ];
     }
 
