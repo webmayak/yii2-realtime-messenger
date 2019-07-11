@@ -3,9 +3,11 @@
 namespace pantera\messenger\api\controllers;
 
 use pantera\messenger\api\models\MessengerThreadsSearch;
+use pantera\messenger\models\MessengerThreads;
 use pantera\messenger\traits\ModuleTrait;
 use Yii;
 use yii\rest\Controller;
+use yii\web\NotFoundHttpException;
 
 class ThreadsController extends Controller
 {
@@ -15,7 +17,22 @@ class ThreadsController extends Controller
     {
         return [
             'index' => ['GET'],
+            'get' => ['GET'],
         ];
+    }
+
+    public function actionGet($id)
+    {
+        /* @var $object \pantera\messenger\api\models\MessengerThreads */
+        $object = Yii::createObject(MessengerThreads::class);
+        $model = $object::find()
+            ->isAvailableForMe()
+            ->andWhere(['=', 'id', $id])
+            ->one();
+        if (!$model) {
+            throw new NotFoundHttpException();
+        }
+        return $model;
     }
 
     /**
