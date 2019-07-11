@@ -27,6 +27,7 @@ class ThreadsController extends Controller
         $object = Yii::createObject(MessengerThreads::class);
         $model = $object::find()
             ->isAvailableForMe()
+            ->addSelectCountNotViewedForUserId(Yii::$app->user->id)
             ->andWhere(['=', 'id', $id])
             ->one();
         if (!$model) {
