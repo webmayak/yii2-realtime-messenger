@@ -4,14 +4,11 @@ namespace pantera\messenger\traits;
 
 use pantera\messenger\api\ModuleApi;
 use pantera\messenger\Module;
+use Yii;
 
 /**
- * Created by PhpStorm.
- * User: singletonn
- * Date: 9/13/18
- * Time: 2:35 PM
- *
  * @property ModuleApi $moduleApi
+ * @property Module $module
  */
 trait ModuleTrait
 {
@@ -20,7 +17,11 @@ trait ModuleTrait
      */
     public function getModuleApi()
     {
-        return ModuleApi::getInstance();
+        $module = ModuleApi::getInstance();
+        if (!$module) {
+            $module = Yii::$app->getModule('messenger-api');
+        }
+        return $module;
     }
 
     /**
@@ -28,6 +29,10 @@ trait ModuleTrait
      */
     public function getModule()
     {
-        return Module::getInstance();
+        $module = Module::getInstance();
+        if (!$module) {
+            $module = Yii::$app->getModule('messenger');
+        }
+        return $module;
     }
 }

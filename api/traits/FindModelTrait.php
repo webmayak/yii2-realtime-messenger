@@ -2,20 +2,35 @@
 
 namespace pantera\messenger\api\traits;
 
+use pantera\messenger\api\models\MessengerThreadsQuery;
 use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreads;
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\web\IdentityInterface;
 use yii\web\NotFoundHttpException;
 
 trait FindModelTrait
 {
+    protected function getBaseQueryForFindByUser(IdentityInterface $user): MessengerThreadsQuery
+    {
+        /* @var $object \pantera\messenger\api\models\MessengerThreads */
+        $object = Yii::createObject(MessengerThreads::class);
+        $query = $object::find()
+            ->isAvailableForMe($user->getId());
+        if ($this->moduleApi->threadSearchShowEmpty === false) {
+            $query->isHasMessages();
+        }
+        return $query;
+    }
+
     /**
      * Найти модели диалога по её идентификатору
      * @param int $id
      * @param bool $isAdmin Флаг что пользователь админ и ему не надо делать проверку на доступность
      * @return MessengerThreads
      * @throws NotFoundHttpException
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     protected function findThreadModel($id, $isAdmin = false)
     {
@@ -38,7 +53,7 @@ trait FindModelTrait
      * @param int|null $threadId Идентификатор диалога
      * @return MessengerMessages
      * @throws NotFoundHttpException
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     protected function findModel($id, $threadId = null)
     {

@@ -10,6 +10,7 @@ use pantera\messenger\models\MessengerThreads;
 use pantera\messenger\models\MessengerThreadUser;
 use pantera\messenger\models\MessengerViewed;
 use pantera\messenger\Module;
+use pantera\messenger\traits\ModuleTrait;
 use Redis;
 use Yii;
 use yii\base\Component;
@@ -24,22 +25,25 @@ use yii\web\NotFoundHttpException;
 class MessengerApi extends Component
 {
     use FindModelTrait;
+    use ModuleTrait;
+
+    public function hasThreadsByUser(IdentityInterface $user)
+    {
+        return $this->getBaseQueryForFindByUser($user)
+            ->exists();
+    }
 
     /**
      * Получить последний активный диалог пользователя
      * @param IdentityInterface $user
      * @return MessengerThreads|null
-     * @throws InvalidConfigException
      */
     public function getLastThreadByUser(IdentityInterface $user)
     {
         $sortExpression = new Expression('IF(' . MessengerThreads::tableName() . '.`last_message_at`,
          ' . MessengerThreads::tableName() . '.`last_message_at`,
           ' . MessengerThreads::tableName() . '.`created_at`) DESC');
-        /* @var $object \pantera\messenger\api\models\MessengerThreads */
-        $object = Yii::createObject(MessengerThreads::class);
-        return $object::find()
-            ->isAvailableForMe($user->getId())
+        return $this->getBaseQueryForFindByUser($user)
             ->orderBy($sortExpression)
             ->one();
     }
