@@ -30,6 +30,8 @@ class ModuleApi extends Module
     ];
     /* @var bool Флаг нужно ли вырезать эмоджи в сообщениях */
     public $truncateEmoji = true;
+    /* @var bool|array Конфиг постраничной навигации поиска диалогов */
+    public $threadsSearchPagination = false;
 
     /**
      * Проверить является ли текуший пользователь админом

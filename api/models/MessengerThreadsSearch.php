@@ -50,7 +50,7 @@ class MessengerThreadsSearch extends MessengerThreads
                     ],
                 ],
             ],
-            'pagination' => false,
+            'pagination' => $this->moduleApi->threadsSearchPagination,
         ]);
     }
 }
