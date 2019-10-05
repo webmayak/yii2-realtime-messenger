@@ -35,6 +35,8 @@ class ModuleApi extends Module
     public $threadsSearchPagination = false;
     /* @var Closure|null Возможность модифицировать запрос на выборку диалогов */
     public $threadsSearchQueryModifier;
+    /* @var Closure|null Возможность модифицировать запрос на выборку сообщений в диалоге */
+    public $messagesSearchQueryModifier;
 
     /**
      * Проверить является ли текуший пользователь админом

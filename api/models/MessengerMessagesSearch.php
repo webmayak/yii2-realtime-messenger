@@ -26,6 +26,9 @@ class MessengerMessagesSearch extends MessengerMessages
         $this->load($params);
         $object = Yii::createObject(\pantera\messenger\models\MessengerMessages::className());
         $query = $object::find();
+        if ($this->moduleApi->messagesSearchQueryModifier) {
+            call_user_func($this->moduleApi->messagesSearchQueryModifier, $query);
+        }
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
