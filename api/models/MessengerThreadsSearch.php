@@ -37,6 +37,9 @@ class MessengerThreadsSearch extends MessengerThreads
         if ($this->moduleApi->threadSearchShowEmpty === false) {
             $query->isHasMessages();
         }
+        if ($this->moduleApi->threadsSearchQueryModifier) {
+            call_user_func($this->moduleApi->threadsSearchQueryModifier, $query);
+        }
         $sortExpression = new Expression('IF(' . MessengerThreads::tableName() . '.`last_message_at`,
          ' . MessengerThreads::tableName() . '.`last_message_at`,
           ' . MessengerThreads::tableName() . '.`created_at`) DESC');

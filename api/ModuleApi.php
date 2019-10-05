@@ -2,6 +2,7 @@
 
 namespace pantera\messenger\api;
 
+use Closure;
 use pantera\messenger\models\MessengerMessages;
 use pantera\messenger\models\MessengerThreads;
 use Yii;
@@ -32,6 +33,8 @@ class ModuleApi extends Module
     public $truncateEmoji = true;
     /* @var bool|array Конфиг постраничной навигации поиска диалогов */
     public $threadsSearchPagination = false;
+    /* @var Closure|null Возможность модифицировать запрос на выборку диалогов */
+    public $threadsSearchQueryModifier;
 
     /**
      * Проверить является ли текуший пользователь админом
