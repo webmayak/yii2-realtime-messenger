@@ -2,11 +2,14 @@
 
 namespace pantera\messenger\api\models;
 
+use pantera\messenger\traits\ModuleTrait;
 use Yii;
 use yii\base\Model;
 
 class NotificationSearch extends MessengerThreads
 {
+    use ModuleTrait;
+
     /**
      * @inheritdoc
      */
@@ -25,6 +28,9 @@ class NotificationSearch extends MessengerThreads
             ->orderBy([MessengerThreads::COLUMN_COUNT_NOT_VIEWED_ALIAS => SORT_DESC])
             ->having(['>', MessengerThreads::COLUMN_COUNT_NOT_VIEWED_ALIAS, 0])
             ->limit(5);
+        if ($this->moduleApi->notificationSearchQueryModifier) {
+            call_user_func($this->moduleApi->notificationSearchQueryModifier, $query);
+        }
         return $query->all();
     }
 }

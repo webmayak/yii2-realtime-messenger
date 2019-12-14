@@ -37,6 +37,8 @@ class ModuleApi extends Module
     public $threadsSearchQueryModifier;
     /* @var Closure|null Возможность модифицировать запрос на выборку сообщений в диалоге */
     public $messagesSearchQueryModifier;
+    /* @var Closure|null Возможность модифицировать запрос на выборку диалогов у уведомлении */
+    public $notificationSearchQueryModifier;
 
     /**
      * Проверить является ли текуший пользователь админом
